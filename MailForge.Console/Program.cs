@@ -1,26 +1,22 @@
-using MailForge.Abstractions;
-using MailForge.AmazonSES;
-using MailForge.Core;
-using MailForge.Resend;
-using MailForge.Smtp;
+using System;
+using System.Threading.Tasks;
 
-namespace MailForge.Console;
-
-public static class Program
+namespace MailForge.Console
 {
-    public static void Main()
+    public static class Program
     {
-        var markers = new[]
+        public static async Task Main(string[] args)
         {
-            typeof(MailForge.Abstractions.PackageInfo).Assembly.GetName(),
-            typeof(MailForge.Core.PackageInfo).Assembly.GetName(),
-            typeof(MailForge.Smtp.PackageInfo).Assembly.GetName(),
-            typeof(MailForge.Resend.PackageInfo).Assembly.GetName(),
-            typeof(MailForge.AmazonSES.PackageInfo).Assembly.GetName(),
-        };
+            if (args.Length > 0 && LiveTests.IsLiveCommand(args[0]))
+            {
+                await LiveTests.RunAsync(args);
+                return;
+            }
 
-        System.Console.WriteLine("MailForge Phase 0 packages:");
-        foreach (var name in markers)
-            System.Console.WriteLine($"  {name.Name} {name.Version}");
+            if (args.Length > 0)
+                System.Console.WriteLine($"Unknown command '{args[0]}'. Supported live commands: {string.Join(", ", LiveTests.Commands)}.\n");
+
+            await Demo.RunAsync();
+        }
     }
 }

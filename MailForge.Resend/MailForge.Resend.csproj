@@ -14,7 +14,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>MailForge;Email;TransactionalEmail;Resend;Provider;API;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Phase 0 repository and CI/CD scaffolding for the MailForge ecosystem. This package hosts the Resend provider implemented in Phase 1.</PackageReleaseNotes>
+    <PackageReleaseNotes>Phase 1 framework MVP: Resend API provider adapter supporting HTML/text, attachments, custom headers, and tags.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -26,6 +26,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MailForge.Abstractions\MailForge.Abstractions.csproj" />
+    <ProjectReference Include="..\MailForge.Core\MailForge.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="10.0.10" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
 
 </Project>

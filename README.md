@@ -70,16 +70,67 @@ dotnet add package MailForge.AmazonSES
 
 ## Quick Start
 
-Coming with Phase 1 (Framework MVP):
+Configure the framework once at startup, then send strongly typed emails:
 
 ```csharp
 services.AddMailForge(builder => builder
-    .UseSmtp(smtp => smtp.Host("smtp.example.com").Port(587).Credentials(user, pass))
-    .UseFakeForTesting());
-
-var sender = services.GetRequiredService<IEmailSender>();
-await sender.SendAsync(new WelcomeEmail(userModel));
+    .UseProvider(new SmtpEmailProvider(new SmtpOptions { Host = "smtp.example.com", Port = 587 }))
+    .UseDefaultFrom("noreply@example.com")
+    .RegisterTemplate("welcome", "<h1>Welcome @Model.Name</h1>"));
 ```
+
+Define a typed email:
+
+```csharp
+public sealed class WelcomeEmail : Email<WelcomeModel>
+{
+    public WelcomeEmail(WelcomeModel model) : base(model)
+    {
+        To("user@example.com");
+        Subject("Welcome {{Name}}!");
+        Template("welcome"); // or Html("...") for an inline template
+        Tag("purpose", "welcome");
+    }
+}
+```
+
+Send it:
+
+```csharp
+var sender = services.GetRequiredService<IEmailSender>();
+var result = await sender.SendAsync(new WelcomeEmail(new WelcomeModel { Name = "Jane" }));
+```
+
+Delivery is validated, logged, audited, and retried on transient failures through the
+middleware pipeline before reaching the configured provider. For development and tests,
+omit `UseProvider` to send through the in-memory `FakeEmailProvider`.
+
+## Live Testing
+
+The sample console app includes live integration checks that send a real message through a
+provider. They are handy for verifying a provider against [smtp4dev](https://github.com/rnwood/smtp4dev)
+or a real service before relying on it in production.
+
+```shell
+# SMTP (smtp4dev on localhost:25, or any SMTP server)
+dotnet run --project MailForge.Console -- live-smtp [host] [port] [to]
+
+# Resend (API key as argument or RESEND_API_KEY)
+dotnet run --project MailForge.Console -- live-resend [apiKey] [to]
+
+# Amazon SES (region as argument or AWS_REGION; credentials from the default AWS chain)
+dotnet run --project MailForge.Console -- live-ses [region] [to]
+```
+
+Environment variables honored by the live tests:
+
+| Variable | Purpose |
+|---|---|
+| `RESEND_API_KEY` | Resend API key (also accepted as an argument) |
+| `AWS_REGION` | SES region (also accepted as an argument) |
+| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | SES credentials |
+| `LIVE_FROM` | Sender address (default `sender@example.com`) |
+| `LIVE_TO` | Recipient address (default `recipient@example.com`) |
 
 ## Repository Layout
 
@@ -101,8 +152,8 @@ MailForge.Console/        Sample console application
 ## Roadmap
 
 ```
-Phase 0: Repository & CI/CD Setup (.NET Solution, NuGet pipeline)  ← current
-Phase 1: Framework MVP (.NET Standard 2.0 Core, SMTP, Resend, Razor)
+Phase 0: Repository & CI/CD Setup (.NET Solution, NuGet pipeline)
+Phase 1: Framework MVP (.NET Standard 2.0 Core, SMTP, Resend, Razor)  ← current
 Phase 2: Studio Companion (ASP.NET Core MVC + HTMX + Bootstrap)
 Phase 3: Server Self-Hosted Platform (.NET 10, REST API, Queue Worker, Postgres)
 Phase 4: Cloud SaaS Commercial Launch (Multi-tenancy, Stripe Billing, DNS tooling)

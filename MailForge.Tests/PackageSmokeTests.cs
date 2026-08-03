@@ -10,24 +10,22 @@ namespace MailForge.Tests
     public class PackageSmokeTests
     {
         [Theory]
-        [InlineData(typeof(MailForge.Abstractions.PackageInfo), "MailForge.Abstractions")]
-        [InlineData(typeof(MailForge.Core.PackageInfo), "MailForge.Core")]
-        [InlineData(typeof(MailForge.Smtp.PackageInfo), "MailForge.Smtp")]
-        [InlineData(typeof(MailForge.Resend.PackageInfo), "MailForge.Resend")]
-        [InlineData(typeof(MailForge.AmazonSES.PackageInfo), "MailForge.AmazonSES")]
+        [InlineData(typeof(EmailMessage), "MailForge.Abstractions")]
+        [InlineData(typeof(EmailSender), "MailForge.Core")]
+        [InlineData(typeof(SmtpEmailProvider), "MailForge.Smtp")]
+        [InlineData(typeof(ResendEmailProvider), "MailForge.Resend")]
+        [InlineData(typeof(AmazonSesEmailProvider), "MailForge.AmazonSES")]
         public void PackageMarker_MatchesPackageId(Type markerType, string expectedPackageId)
         {
-            var field = markerType.GetField("Name")!;
-            var name = field.GetValue(null);
-            Assert.Equal(expectedPackageId, name);
+            Assert.Equal(expectedPackageId, markerType.Assembly.GetName().Name);
         }
 
         [Theory]
-        [InlineData(typeof(MailForge.Abstractions.PackageInfo))]
-        [InlineData(typeof(MailForge.Core.PackageInfo))]
-        [InlineData(typeof(MailForge.Smtp.PackageInfo))]
-        [InlineData(typeof(MailForge.Resend.PackageInfo))]
-        [InlineData(typeof(MailForge.AmazonSES.PackageInfo))]
+        [InlineData(typeof(EmailMessage))]
+        [InlineData(typeof(EmailSender))]
+        [InlineData(typeof(SmtpEmailProvider))]
+        [InlineData(typeof(ResendEmailProvider))]
+        [InlineData(typeof(AmazonSesEmailProvider))]
         public void LibraryAssemblies_AreVersionedFromDirectoryBuildProps(Type markerType)
         {
             var version = markerType.Assembly.GetName().Version;
@@ -40,11 +38,11 @@ namespace MailForge.Tests
         {
             var assemblies = new[]
             {
-                Assembly.GetAssembly(typeof(MailForge.Abstractions.PackageInfo)),
-                Assembly.GetAssembly(typeof(MailForge.Core.PackageInfo)),
-                Assembly.GetAssembly(typeof(MailForge.Smtp.PackageInfo)),
-                Assembly.GetAssembly(typeof(MailForge.Resend.PackageInfo)),
-                Assembly.GetAssembly(typeof(MailForge.AmazonSES.PackageInfo)),
+                Assembly.GetAssembly(typeof(EmailMessage)),
+                Assembly.GetAssembly(typeof(EmailSender)),
+                Assembly.GetAssembly(typeof(SmtpEmailProvider)),
+                Assembly.GetAssembly(typeof(ResendEmailProvider)),
+                Assembly.GetAssembly(typeof(AmazonSesEmailProvider)),
             };
 
             Assert.Equal(5, assemblies.Length);
