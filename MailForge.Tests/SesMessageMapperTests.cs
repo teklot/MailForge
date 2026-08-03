@@ -1,4 +1,3 @@
-using MailForge.Abstractions;
 using MailForge.AmazonSES;
 
 namespace MailForge.Tests

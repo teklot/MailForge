@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MailForge.Abstractions;
-using MailForge.Core;
 
 namespace MailForge.Tests
 {

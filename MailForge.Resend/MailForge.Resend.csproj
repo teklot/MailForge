@@ -25,8 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MailForge.Abstractions\MailForge.Abstractions.csproj" />
-    <ProjectReference Include="..\MailForge.Core\MailForge.Core.csproj" />
+    <ProjectReference Include="..\MailForge\MailForge.csproj" />
   </ItemGroup>
 
   <ItemGroup>

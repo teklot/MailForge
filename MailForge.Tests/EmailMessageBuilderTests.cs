@@ -1,4 +1,3 @@
-using MailForge.Abstractions;
 
 namespace MailForge.Tests
 {

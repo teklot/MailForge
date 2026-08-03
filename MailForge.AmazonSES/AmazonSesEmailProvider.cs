@@ -6,7 +6,6 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
-using MailForge.Abstractions;
 
 namespace MailForge.AmazonSES
 {

@@ -1,4 +1,3 @@
-using MailForge.Core;
 
 namespace MailForge.Tests
 {

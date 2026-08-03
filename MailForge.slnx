@@ -4,8 +4,7 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="MailForge.Abstractions/MailForge.Abstractions.csproj" />
-  <Project Path="MailForge.Core/MailForge.Core.csproj" />
+  <Project Path="MailForge/MailForge.csproj" />
   <Project Path="MailForge.Smtp/MailForge.Smtp.csproj" />
   <Project Path="MailForge.Resend/MailForge.Resend.csproj" />
   <Project Path="MailForge.AmazonSES/MailForge.AmazonSES.csproj" />

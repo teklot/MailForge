@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using MailForge.Abstractions;
 using MailForge.AmazonSES;
 using MailForge.Resend;
 using MailForge.Smtp;
@@ -135,7 +134,7 @@ namespace MailForge.Console
         private static string ToAddress(string[] args, int index) =>
             Environment.GetEnvironmentVariable("LIVE_TO") ?? Arg(args, index, "recipient@example.com");
 
-        private static string NullIfEmpty(string value) =>
+        private static string? NullIfEmpty(string? value) =>
             string.IsNullOrWhiteSpace(value) ? null : value;
     }
 }

@@ -1,7 +1,7 @@
 # MailForge — Transactional Communication for .NET
 
 [![CI](https://github.com/teklot/MailForge/actions/workflows/ci.yml/badge.svg)](https://github.com/teklot/MailForge/actions/workflows/ci.yml)
-[![NuGet Version](https://img.shields.io/nuget/v/MailForge.Core)](https://www.nuget.org/packages/MailForge.Core)
+[![NuGet Version](https://img.shields.io/nuget/v/MailForge)](https://www.nuget.org/packages/MailForge)
 [![.NET](https://img.shields.io/badge/.NET-net10.0%20%7C%20netstandard2.0-blue)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](LICENSE)
 
@@ -26,7 +26,7 @@ MailForge is structured into five progressive layers that evolve without archite
                              ▼
 ┌─────────────────────────────────────────────────────────┐
 │              Layer 1: MailForge Framework               │
-│       MailForge.Abstractions + MailForge.Core           │
+│                 MailForge (core)                        │
 └────────────────────────────┬────────────────────────────┘
                              │
        ┌─────────────────────┼─────────────────────┐
@@ -42,7 +42,7 @@ MailForge is structured into five progressive layers that evolve without archite
     Internet                                  Delivery Queue
 ```
 
-1. **Layer 1 — Core Framework** (`MailForge.Abstractions`, `MailForge.Core`): Developer programming model, typed emails, pipeline, validation, and middleware abstractions (.NET Standard 2.0 compatible).
+1. **Layer 1 — Core Framework** (`MailForge`): Provider-agnostic contracts plus the developer programming model: typed emails, pipeline, validation, middleware, and template rendering (.NET Standard 2.0 compatible).
 2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`): Connectors handling authentication, external API communication, and delivery responses.
 3. **Layer 3 — Local Studio** (`MailForge.Studio`): ASP.NET Core MVC + HTMX + Bootstrap web companion for local testing, email inspection, live preview, and message replay.
 4. **Layer 4 — Server Platform** (`MailForge.Server`): Self-hosted Docker platform providing REST API submission, message queues, retry policies, template management, and admin dashboard.
@@ -52,8 +52,7 @@ MailForge is structured into five progressive layers that evolve without archite
 
 | Package | Description |
 |---|---|
-| **MailForge.Abstractions** | Provider-agnostic contracts: `IEmailProvider`, `IEmailSender`, `EmailMessage`, delivery status, and provider capability flags |
-| **MailForge.Core** | Framework core: typed emails, middleware pipeline, validation, Razor/inline rendering, and DI integration |
+| **MailForge** | Core framework + contracts: `IEmailProvider`, `IEmailSender`, `EmailMessage`, typed emails, middleware pipeline, validation, Razor/inline rendering, and DI integration |
 | **MailForge.Smtp** | SMTP provider adapter for routing messages to any standard SMTP server |
 | **MailForge.Resend** | Resend API provider adapter |
 | **MailForge.AmazonSES** | Amazon Simple Email Service provider adapter |
@@ -61,8 +60,7 @@ MailForge is structured into five progressive layers that evolve without archite
 ## Installation
 
 ```shell
-dotnet add package MailForge.Abstractions
-dotnet add package MailForge.Core
+dotnet add package MailForge
 dotnet add package MailForge.Smtp
 dotnet add package MailForge.Resend
 dotnet add package MailForge.AmazonSES
@@ -135,13 +133,12 @@ Environment variables honored by the live tests:
 ## Repository Layout
 
 ```
-MailForge.Abstractions/   Layer 1 contracts (IEmailProvider, IEmailSender, ...)
-MailForge.Core/           Layer 1 framework (typed emails, pipeline, DI)
-MailForge.Smtp/           Layer 2 SMTP provider
-MailForge.Resend/         Layer 2 Resend provider
-MailForge.AmazonSES/      Layer 2 Amazon SES provider
-MailForge.Tests/          xUnit test suite
-MailForge.Console/        Sample console application
+MailForge/              Layer 1 core framework + contracts (typed emails, pipeline, DI)
+MailForge.Smtp/         Layer 2 SMTP provider
+MailForge.Resend/       Layer 2 Resend provider
+MailForge.AmazonSES/    Layer 2 Amazon SES provider
+MailForge.Tests/        xUnit test suite
+MailForge.Console/      Sample console application
 ```
 
 ## Supported Frameworks

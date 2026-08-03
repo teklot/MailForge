@@ -6,7 +6,6 @@ using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using MailForge.Abstractions;
 
 namespace MailForge.Smtp
 {

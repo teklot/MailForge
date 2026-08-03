@@ -1,7 +1,5 @@
 using System.Reflection;
-using MailForge.Abstractions;
 using MailForge.AmazonSES;
-using MailForge.Core;
 using MailForge.Resend;
 using MailForge.Smtp;
 
@@ -10,8 +8,7 @@ namespace MailForge.Tests
     public class PackageSmokeTests
     {
         [Theory]
-        [InlineData(typeof(EmailMessage), "MailForge.Abstractions")]
-        [InlineData(typeof(EmailSender), "MailForge.Core")]
+        [InlineData(typeof(EmailMessage), "MailForge")]
         [InlineData(typeof(SmtpEmailProvider), "MailForge.Smtp")]
         [InlineData(typeof(ResendEmailProvider), "MailForge.Resend")]
         [InlineData(typeof(AmazonSesEmailProvider), "MailForge.AmazonSES")]
@@ -47,7 +44,7 @@ namespace MailForge.Tests
 
             Assert.Equal(5, assemblies.Length);
             Assert.All(assemblies, a => Assert.NotNull(a));
-            Assert.Equal(5, assemblies.Distinct().Count());
+            Assert.Equal(4, assemblies.Distinct().Count());
         }
     }
 }

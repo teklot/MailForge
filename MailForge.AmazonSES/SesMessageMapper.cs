@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using MimeKit;
-using MailForge.Abstractions;
 
 namespace MailForge.AmazonSES
 {

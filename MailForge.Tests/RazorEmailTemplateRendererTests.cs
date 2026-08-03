@@ -1,4 +1,4 @@
-using MailForge.Core.Templates;
+using MailForge.Templates;
 
 namespace MailForge.Tests
 {

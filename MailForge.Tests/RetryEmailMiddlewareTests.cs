@@ -1,5 +1,4 @@
-using MailForge.Abstractions;
-using MailForge.Core.Middleware;
+using MailForge.Middleware;
 
 namespace MailForge.Tests
 {

@@ -1,7 +1,5 @@
-using MailForge.Abstractions;
-using MailForge.Core;
-using MailForge.Core.Templates;
-using MailForge.Core.Validation;
+using MailForge.Templates;
+using MailForge.Validation;
 
 namespace MailForge.Tests
 {

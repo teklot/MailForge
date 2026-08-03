@@ -2,8 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MailForge;
-using MailForge.Abstractions;
-using MailForge.Core;
 
 namespace MailForge.Console
 {
