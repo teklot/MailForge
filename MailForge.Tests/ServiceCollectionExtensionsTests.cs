@@ -39,6 +39,28 @@ namespace MailForge.Tests
         }
 
         [Fact]
+        public async Task AddMailForge_UseFailover_WiresFailoverProviderChain()
+        {
+            var primary = new FakeEmailProvider();
+            var backup = new FakeEmailProvider();
+            var services = new ServiceCollection();
+            services.AddMailForge(builder => builder
+                .UseDefaultFrom("noreply@example.com")
+                .UseFailover(primary, backup));
+
+            await using var provider = services.BuildServiceProvider();
+            var sender = provider.GetRequiredService<IEmailSender>();
+            var resolved = Assert.IsType<FailoverEmailProvider>(provider.GetRequiredService<IEmailProvider>());
+
+            var result = await sender.SendAsync(new InviteEmail(new InviteModel()), TestContext.Current.CancellationToken);
+
+            Assert.True(result.Succeeded);
+            Assert.IsType<FailoverEmailProvider>(resolved);
+            Assert.Single(primary.SentMessages);
+            Assert.Empty(backup.SentMessages);
+        }
+
+        [Fact]
         public void AddMailForge_NullConfiguration_Throws()
         {
             var services = new ServiceCollection();

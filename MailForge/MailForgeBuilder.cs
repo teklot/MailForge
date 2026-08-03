@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MailForge.Templates;
 
 namespace MailForge
@@ -86,6 +87,46 @@ namespace MailForge
         {
             Middleware.Add(middleware ?? throw new ArgumentNullException(nameof(middleware)));
             return this;
+        }
+
+        /// <summary>
+        /// Wraps providers in a failover precedence chain, each route carrying its own
+        /// <see cref="ProviderFailoverRoute.Policy"/> and attempt budget. Routes are tried in
+        /// order and delivery stops at the first success.
+        /// </summary>
+        public MailForgeBuilder UseFailover(IEnumerable<ProviderFailoverRoute> routes)
+        {
+            return UseProvider(new FailoverEmailProvider(routes));
+        }
+
+        /// <summary>Wraps providers in a failover precedence chain from routes listed in order.</summary>
+        public MailForgeBuilder UseFailover(params ProviderFailoverRoute[] routes)
+        {
+            return UseProvider(new FailoverEmailProvider(routes));
+        }
+
+        /// <summary>
+        /// Wraps providers in a failover precedence chain tried in order until one succeeds.
+        /// Every route uses the default <see cref="FailoverPolicy.TransientOnly"/> policy with a
+        /// single attempt.
+        /// </summary>
+        public MailForgeBuilder UseFailover(params IEmailProvider[] providers)
+        {
+            if (providers == null)
+                throw new ArgumentNullException(nameof(providers));
+            return UseProvider(new FailoverEmailProvider(providers));
+        }
+
+        /// <summary>Wraps providers in a failover chain that applies <paramref name="policy"/> to every route.</summary>
+        public MailForgeBuilder UseFailover(FailoverPolicy policy, params IEmailProvider[] providers)
+        {
+            if (policy == null)
+                throw new ArgumentNullException(nameof(policy));
+            if (providers == null)
+                throw new ArgumentNullException(nameof(providers));
+
+            var routes = providers.Select(provider => new ProviderFailoverRoute(provider, policy)).ToArray();
+            return UseProvider(new FailoverEmailProvider(routes));
         }
     }
 }
