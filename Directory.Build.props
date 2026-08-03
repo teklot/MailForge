@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+</Project>

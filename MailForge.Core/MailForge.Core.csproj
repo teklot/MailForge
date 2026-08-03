@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>MailForge.Core</Title>
+    <Authors>TekLot,$(AssemblyName)</Authors>
+    <Description>MailForge.Core is the foundation of the MailForge transactional communication ecosystem. Provides the developer programming model: typed emails, pipeline, validation, and middleware over the MailForge.Abstractions contracts.</Description>
+    <Copyright>Copyright © 2026 TekLot</Copyright>
+    <PackageId>MailForge.Core</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>MailForge;Email;TransactionalEmail;SMTP;Framework;Core;Pipeline;Validation;dotnet-library</PackageTags>
+    <PackageReleaseNotes>Phase 0 repository and CI/CD scaffolding for the MailForge ecosystem. This package is the Phase 1 framework MVP host for typed emails, the middleware pipeline, and DI integration.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MailForge.Abstractions\MailForge.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
