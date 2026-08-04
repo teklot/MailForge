@@ -11,10 +11,10 @@ namespace MailForge.Middleware
     public sealed class AuditEmailMiddleware : IEmailMiddleware
     {
         private readonly IEmailAuditSink _auditSink;
-        private readonly string _providerName;
+        private readonly string? _providerName;
 
         /// <summary>Creates the middleware.</summary>
-        public AuditEmailMiddleware(IEmailAuditSink auditSink, string providerName = null)
+        public AuditEmailMiddleware(IEmailAuditSink auditSink, string? providerName = null)
         {
             _auditSink = auditSink ?? throw new ArgumentNullException(nameof(auditSink));
             _providerName = providerName;

@@ -12,12 +12,12 @@ namespace MailForge
     /// </summary>
     public sealed class MailForgeBuilder
     {
-        internal IEmailProvider Provider { get; private set; }
-        internal EmailAddress DefaultFrom { get; private set; }
+        internal IEmailProvider? Provider { get; private set; }
+        internal EmailAddress? DefaultFrom { get; private set; }
         internal bool AutoPlainText { get; private set; } = true;
         internal int MaxRetryAttempts { get; private set; } = 3;
         internal TimeSpan RetryBaseDelay { get; private set; } = TimeSpan.FromSeconds(1);
-        internal IEmailAuditSink AuditSink { get; private set; }
+        internal IEmailAuditSink? AuditSink { get; private set; }
         internal ITemplateRegistry Templates { get; } = new TemplateRegistry();
         internal IList<IEmailValidator> Validators { get; } = new List<IEmailValidator>();
         internal IList<IEmailMiddleware> Middleware { get; } = new List<IEmailMiddleware>();
@@ -37,7 +37,7 @@ namespace MailForge
         }
 
         /// <summary>Sets a default sender from a raw address string.</summary>
-        public MailForgeBuilder UseDefaultFrom(string address, string displayName = null) =>
+        public MailForgeBuilder UseDefaultFrom(string address, string? displayName = null) =>
             UseDefaultFrom(new EmailAddress(address, displayName));
 
         /// <summary>

@@ -16,10 +16,10 @@ namespace MailForge
         public EmailDeliveryStatus Status { get; }
 
         /// <summary>The provider-specific message identifier, when available.</summary>
-        public string ProviderMessageId { get; }
+        public string? ProviderMessageId { get; }
 
         /// <summary>A description of the outcome.</summary>
-        public string Details { get; }
+        public string? Details { get; }
 
         /// <summary>The number of delivery attempts made.</summary>
         public int Attempt { get; }
@@ -34,7 +34,7 @@ namespace MailForge
         public IDictionary<string, object> Data { get; }
 
         /// <summary>Creates an audit record.</summary>
-        public EmailAuditRecord(string messageId, string providerName, EmailDeliveryStatus status, string providerMessageId, string details, int attempt, DateTimeOffset completedAt, EmailMessage message)
+        public EmailAuditRecord(string messageId, string providerName, EmailDeliveryStatus status, string? providerMessageId, string? details, int attempt, DateTimeOffset completedAt, EmailMessage message)
         {
             MessageId = messageId;
             ProviderName = providerName;

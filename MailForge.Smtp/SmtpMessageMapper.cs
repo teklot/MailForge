@@ -24,16 +24,16 @@ namespace MailForge.Smtp
             var mime = new MimeMessage();
 
             if (message.From != null)
-                mime.From.Add(new MailboxAddress(message.From.DisplayName, message.From.Address));
+                mime.From.Add(new MailboxAddress(message.From.DisplayName ?? "", message.From.Address));
 
             foreach (var recipient in message.ToRecipients)
-                mime.To.Add(new MailboxAddress(recipient.Address.DisplayName, recipient.Address.Address));
+                mime.To.Add(new MailboxAddress(recipient.Address.DisplayName ?? "", recipient.Address.Address));
             foreach (var recipient in message.CcRecipients)
-                mime.Cc.Add(new MailboxAddress(recipient.Address.DisplayName, recipient.Address.Address));
+                mime.Cc.Add(new MailboxAddress(recipient.Address.DisplayName ?? "", recipient.Address.Address));
             foreach (var recipient in message.BccRecipients)
-                mime.Bcc.Add(new MailboxAddress(recipient.Address.DisplayName, recipient.Address.Address));
+                mime.Bcc.Add(new MailboxAddress(recipient.Address.DisplayName ?? "", recipient.Address.Address));
 
-            mime.Subject = message.Subject;
+            mime.Subject = message.Subject ?? "";
             mime.Priority = MapPriority(message.Priority);
 
             var body = new BodyBuilder();

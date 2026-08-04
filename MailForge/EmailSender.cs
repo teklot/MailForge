@@ -20,7 +20,7 @@ namespace MailForge
         private readonly IEmailTemplateRenderer _templateRenderer;
         private readonly IInlineTemplateRenderer _inlineRenderer;
         private readonly ITemplateRegistry _templateRegistry;
-        private readonly EmailAddress _defaultFrom;
+        private readonly EmailAddress? _defaultFrom;
         private readonly bool _autoPlainText;
 
         /// <summary>Creates an email sender from its dependencies.</summary>
@@ -31,7 +31,7 @@ namespace MailForge
             IEmailTemplateRenderer templateRenderer,
             IInlineTemplateRenderer inlineRenderer,
             ITemplateRegistry templateRegistry,
-            EmailAddress defaultFrom = null,
+            EmailAddress? defaultFrom = null,
             bool autoPlainText = true)
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
@@ -64,8 +64,8 @@ namespace MailForge
 
         private async Task<EmailMessage> BuildMessageAsync<TModel>(Email<TModel> email, CancellationToken cancellationToken)
         {
-            string html = null;
-            string text = null;
+            string? html = null;
+            string? text = null;
 
             if (email.InlineHtml != null)
                 html = _inlineRenderer.Render(email.InlineHtml, email.Model);
@@ -88,8 +88,11 @@ namespace MailForge
             recipients.AddRange(email.Cc);
             recipients.AddRange(email.Bcc);
 
+            var from = email.From ?? _defaultFrom
+                ?? throw new InvalidOperationException("No sender address is configured. Set a default via UseDefaultFrom(...) or call SetFrom(...) on the email.");
+
             return new EmailMessage(
-                email.From ?? _defaultFrom,
+                from,
                 recipients,
                 subject,
                 html,

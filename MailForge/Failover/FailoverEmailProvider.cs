@@ -18,7 +18,7 @@ namespace MailForge
         private readonly ProviderFailoverRoute[] _routes;
 
         /// <summary>Creates a failover provider from an ordered list of routes.</summary>
-        public FailoverEmailProvider(IEnumerable<ProviderFailoverRoute> routes)
+        public FailoverEmailProvider(IEnumerable<ProviderFailoverRoute>? routes)
         {
             if (routes == null)
                 throw new ArgumentNullException(nameof(routes));

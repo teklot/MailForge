@@ -14,13 +14,13 @@ namespace MailForge
         public EmailAddress From { get; }
 
         /// <summary>The message subject.</summary>
-        public string Subject { get; }
+        public string? Subject { get; }
 
         /// <summary>The HTML body (may be null when only a plain-text body is provided).</summary>
-        public string HtmlBody { get; }
+        public string? HtmlBody { get; }
 
         /// <summary>The plain-text body (may be null when only an HTML body is provided).</summary>
-        public string TextBody { get; }
+        public string? TextBody { get; }
 
         /// <summary>The message importance level.</summary>
         public EmailPriority Priority { get; }
@@ -47,14 +47,14 @@ namespace MailForge
         public EmailMessage(
             EmailAddress from,
             IEnumerable<EmailRecipient> recipients,
-            string subject,
-            string htmlBody = null,
-            string textBody = null,
+            string? subject,
+            string? htmlBody = null,
+            string? textBody = null,
             EmailPriority priority = EmailPriority.Normal,
-            IEnumerable<EmailAttachment> attachments = null,
-            IDictionary<string, string> headers = null,
-            IDictionary<string, string> tags = null,
-            string messageId = null)
+            IEnumerable<EmailAttachment>? attachments = null,
+            IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? tags = null,
+            string? messageId = null)
         {
             From = from;
             Subject = subject;

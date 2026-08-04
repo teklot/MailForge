@@ -65,7 +65,7 @@ namespace MailForge.Resend
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
             })
             {
-                httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
+                httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey!);
 
                 HttpResponseMessage response;
                 try
@@ -133,7 +133,7 @@ namespace MailForge.Resend
             return request;
         }
 
-        private static string[] ToArray(IReadOnlyList<EmailRecipient> recipients)
+        private static string[]? ToArray(IReadOnlyList<EmailRecipient> recipients)
         {
             if (recipients.Count == 0)
                 return null;
@@ -143,7 +143,7 @@ namespace MailForge.Resend
             return result;
         }
 
-        private static string TryParseMessageId(string body)
+        private static string? TryParseMessageId(string body)
         {
             try
             {
@@ -156,14 +156,14 @@ namespace MailForge.Resend
             }
         }
 
-        private static string TryParseError(string body)
+        private static string? TryParseError(string body)
         {
             try
             {
                 var error = JsonSerializer.Deserialize<ResendErrorResponse>(body, JsonOptions);
                 return string.IsNullOrWhiteSpace(error?.Message)
                     ? null
-                    : $"Resend rejected the request: {error.Message}";
+                    : $"Resend rejected the request: {error?.Message}";
             }
             catch (JsonException)
             {

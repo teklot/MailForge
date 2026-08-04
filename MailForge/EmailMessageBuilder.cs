@@ -6,12 +6,12 @@ namespace MailForge
     /// <summary>Fluent builder used to construct an <see cref="EmailMessage"/>.</summary>
     public sealed class EmailMessageBuilder
     {
-        private EmailAddress _from;
-        private string _subject;
-        private string _htmlBody;
-        private string _textBody;
+        private EmailAddress? _from;
+        private string? _subject;
+        private string? _htmlBody;
+        private string? _textBody;
         private EmailPriority _priority = EmailPriority.Normal;
-        private string _messageId;
+        private string? _messageId;
         private readonly List<EmailRecipient> _recipients = new List<EmailRecipient>();
         private readonly List<EmailAttachment> _attachments = new List<EmailAttachment>();
         private readonly Dictionary<string, string> _headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -25,22 +25,22 @@ namespace MailForge
         }
 
         /// <summary>Sets the sender address from a raw address string.</summary>
-        public EmailMessageBuilder From(string address, string displayName = null) => From(new EmailAddress(address, displayName));
+        public EmailMessageBuilder From(string address, string? displayName = null) => From(new EmailAddress(address, displayName));
 
         /// <summary>Adds a primary recipient.</summary>
-        public EmailMessageBuilder To(string address, string displayName = null) => AddRecipient(EmailRecipientType.To, address, displayName);
+        public EmailMessageBuilder To(string address, string? displayName = null) => AddRecipient(EmailRecipientType.To, address, displayName);
 
         /// <summary>Adds a primary recipient.</summary>
         public EmailMessageBuilder To(EmailAddress address) => AddRecipient(EmailRecipientType.To, address);
 
         /// <summary>Adds a carbon-copy recipient.</summary>
-        public EmailMessageBuilder Cc(string address, string displayName = null) => AddRecipient(EmailRecipientType.Cc, address, displayName);
+        public EmailMessageBuilder Cc(string address, string? displayName = null) => AddRecipient(EmailRecipientType.Cc, address, displayName);
 
         /// <summary>Adds a carbon-copy recipient.</summary>
         public EmailMessageBuilder Cc(EmailAddress address) => AddRecipient(EmailRecipientType.Cc, address);
 
         /// <summary>Adds a blind-carbon-copy recipient.</summary>
-        public EmailMessageBuilder Bcc(string address, string displayName = null) => AddRecipient(EmailRecipientType.Bcc, address, displayName);
+        public EmailMessageBuilder Bcc(string address, string? displayName = null) => AddRecipient(EmailRecipientType.Bcc, address, displayName);
 
         /// <summary>Adds a blind-carbon-copy recipient.</summary>
         public EmailMessageBuilder Bcc(EmailAddress address) => AddRecipient(EmailRecipientType.Bcc, address);
@@ -107,7 +107,7 @@ namespace MailForge
 
         /// <summary>Builds the message.</summary>
         public EmailMessage Build() => new EmailMessage(
-            _from,
+            _from ?? throw new InvalidOperationException("A sender address is required. Call From(...) before Build()."),
             _recipients,
             _subject,
             _htmlBody,
@@ -118,7 +118,7 @@ namespace MailForge
             _tags,
             _messageId);
 
-        private EmailMessageBuilder AddRecipient(EmailRecipientType type, string address, string displayName) =>
+        private EmailMessageBuilder AddRecipient(EmailRecipientType type, string address, string? displayName) =>
             AddRecipient(type, new EmailAddress(address, displayName));
 
         private EmailMessageBuilder AddRecipient(EmailRecipientType type, EmailAddress address)

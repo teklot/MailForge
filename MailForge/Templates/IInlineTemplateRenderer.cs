@@ -11,6 +11,6 @@ namespace MailForge.Templates
         /// <param name="template">The template text.</param>
         /// <param name="model">The model instance.</param>
         /// <returns>The rendered output.</returns>
-        string Render(string template, object model);
+        string Render(string template, object? model);
     }
 }

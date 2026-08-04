@@ -83,7 +83,7 @@ namespace MailForge.AmazonSES
 
         private static IAmazonSimpleEmailServiceV2 CreateClient(AmazonSesOptions options)
         {
-            RegionEndpoint region = null;
+            RegionEndpoint? region = null;
             if (!string.IsNullOrWhiteSpace(options.Region))
                 region = RegionEndpoint.GetBySystemName(options.Region);
 

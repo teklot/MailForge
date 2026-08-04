@@ -43,10 +43,10 @@ namespace MailForge
         public bool IsInline { get; }
 
         /// <summary>The content id used to reference inline images (cid:value) from the HTML body.</summary>
-        public string ContentId { get; }
+        public string? ContentId { get; }
 
         /// <summary>Creates an attachment from a byte array.</summary>
-        public EmailAttachment(string fileName, byte[] content, string mediaType = null, bool isInline = false, string contentId = null)
+        public EmailAttachment(string fileName, byte[] content, string? mediaType = null, bool isInline = false, string? contentId = null)
         {
             FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
             Content = content ?? throw new ArgumentNullException(nameof(content));
@@ -56,13 +56,13 @@ namespace MailForge
         }
 
         /// <summary>Creates an attachment by reading all bytes from a stream.</summary>
-        public EmailAttachment(string fileName, Stream content, string mediaType = null, bool isInline = false, string contentId = null)
+        public EmailAttachment(string fileName, Stream content, string? mediaType = null, bool isInline = false, string? contentId = null)
             : this(fileName, ReadAllBytes(content), mediaType, isInline, contentId)
         {
         }
 
         /// <summary>Creates an attachment from a file on disk.</summary>
-        public static EmailAttachment FromFile(string path, string mediaType = null, bool isInline = false, string contentId = null)
+        public static EmailAttachment FromFile(string path, string? mediaType = null, bool isInline = false, string? contentId = null)
             => new EmailAttachment(Path.GetFileName(path), File.ReadAllBytes(path), mediaType, isInline, contentId);
 
         /// <summary>Infers a MIME media type from a file name extension.</summary>

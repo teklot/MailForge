@@ -19,7 +19,7 @@ namespace MailForge
         }
 
         /// <summary>Creates a recipient from a raw address string and role.</summary>
-        public EmailRecipient(string address, EmailRecipientType type = EmailRecipientType.To, string displayName = null)
+        public EmailRecipient(string address, EmailRecipientType type = EmailRecipientType.To, string? displayName = null)
             : this(new EmailAddress(address, displayName), type)
         {
         }

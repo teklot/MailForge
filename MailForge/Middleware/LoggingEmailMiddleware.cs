@@ -11,10 +11,10 @@ namespace MailForge.Middleware
     /// </summary>
     public sealed class LoggingEmailMiddleware : IEmailMiddleware
     {
-        private readonly ILogger<LoggingEmailMiddleware> _logger;
+        private readonly ILogger<LoggingEmailMiddleware>? _logger;
 
         /// <summary>Creates the middleware.</summary>
-        public LoggingEmailMiddleware(ILogger<LoggingEmailMiddleware> logger = null)
+        public LoggingEmailMiddleware(ILogger<LoggingEmailMiddleware>? logger = null)
         {
             _logger = logger;
         }

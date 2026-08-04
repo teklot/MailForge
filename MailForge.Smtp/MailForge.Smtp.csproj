@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
-    <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>MailForge.Smtp</Title>
-    <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>MailForge.Smtp is a provider adapter for the MailForge transactional communication ecosystem. Routes MailForge messages to any standard SMTP server for delivery.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>
     <PackageId>MailForge.Smtp</PackageId>

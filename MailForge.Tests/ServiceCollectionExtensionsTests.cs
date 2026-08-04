@@ -64,7 +64,7 @@ namespace MailForge.Tests
         public void AddMailForge_NullConfiguration_Throws()
         {
             var services = new ServiceCollection();
-            Assert.Throws<System.ArgumentNullException>(() => services.AddMailForge(null));
+            Assert.Throws<System.ArgumentNullException>(() => services.AddMailForge(null!));
         }
     }
 }

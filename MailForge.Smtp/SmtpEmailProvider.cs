@@ -16,7 +16,7 @@ namespace MailForge.Smtp
     public sealed class SmtpEmailProvider : IEmailProvider
     {
         private readonly SmtpOptions _options;
-        private readonly ISmtpClient _client;
+        private readonly ISmtpClient? _client;
 
         /// <summary>Creates the provider from SMTP options.</summary>
         public SmtpEmailProvider(SmtpOptions options)
@@ -51,6 +51,8 @@ namespace MailForge.Smtp
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
 
+            var host = _options.Host ?? throw new InvalidOperationException("SMTP Host is not configured. Set Host on SmtpOptions.");
+
             var mimeMessage = SmtpMessageMapper.ToMimeMessage(message);
 
             var client = _client ?? new SmtpClient();
@@ -64,10 +66,10 @@ namespace MailForge.Smtp
                         smtp.LocalDomain = _options.LocalDomain;
                 }
 
-                await client.ConnectAsync(_options.Host, _options.Port, _options.SecureSocketOptions, cancellationToken);
+                await client.ConnectAsync(host, _options.Port, _options.SecureSocketOptions, cancellationToken);
 
                 if (!string.IsNullOrEmpty(_options.Username))
-                    await client.AuthenticateAsync(_options.Username, _options.Password, cancellationToken);
+                    await client.AuthenticateAsync(_options.Username ?? string.Empty, _options.Password ?? string.Empty, cancellationToken);
 
                 var messageId = await client.SendAsync(mimeMessage, cancellationToken);
 

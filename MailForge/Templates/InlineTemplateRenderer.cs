@@ -21,7 +21,7 @@ namespace MailForge.Templates
             new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         /// <summary>Renders a template by substituting model property placeholders.</summary>
-        public string Render(string template, object model)
+        public string Render(string template, object? model)
         {
             if (template == null)
                 throw new ArgumentNullException(nameof(template));
@@ -34,9 +34,9 @@ namespace MailForge.Templates
         }
 
         /// <summary>Resolves a property path against a model, or null when it cannot be resolved.</summary>
-        private static string Resolve(object model, string path)
+        private static string? Resolve(object? model, string path)
         {
-            object current = model;
+            object? current = model;
             foreach (var segment in path.Split('.'))
             {
                 var (name, index) = SplitIndex(segment);
@@ -85,7 +85,7 @@ namespace MailForge.Templates
                 : (segment, null);
         }
 
-        private static object GetPropertyValue(object target, string propertyName)
+        private static object? GetPropertyValue(object target, string propertyName)
         {
             var type = target.GetType();
             var properties = PropertyCache.GetOrAdd(type, t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));

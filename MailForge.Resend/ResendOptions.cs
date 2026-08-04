@@ -6,7 +6,7 @@ namespace MailForge.Resend
     public sealed class ResendOptions
     {
         /// <summary>The Resend API key.</summary>
-        public string ApiKey { get; set; }
+        public string? ApiKey { get; set; }
 
         /// <summary>The Resend API base address (defaults to https://api.resend.com/).</summary>
         public Uri BaseUri { get; set; } = new Uri("https://api.resend.com/");

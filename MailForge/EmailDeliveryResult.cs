@@ -25,7 +25,7 @@ namespace MailForge
         public DateTimeOffset CompletedAt { get; }
 
         /// <summary>A description of the outcome.</summary>
-        public string Details => ProviderResult?.Details;
+        public string? Details => ProviderResult?.Details;
 
         private EmailDeliveryResult(EmailDeliveryStatus status, EmailMessage message, ProviderDeliveryResult providerResult)
         {

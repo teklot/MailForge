@@ -9,10 +9,10 @@ namespace MailForge
         public string Address { get; }
 
         /// <summary>An optional display name shown next to the address.</summary>
-        public string DisplayName { get; }
+        public string? DisplayName { get; }
 
         /// <summary>Creates an email address.</summary>
-        public EmailAddress(string address, string displayName = null)
+        public EmailAddress(string address, string? displayName = null)
         {
             if (string.IsNullOrWhiteSpace(address))
                 throw new ArgumentException("An email address is required.", nameof(address));
@@ -25,13 +25,13 @@ namespace MailForge
             string.IsNullOrEmpty(DisplayName) ? Address : $"{DisplayName} <{Address}>";
 
         /// <summary>Returns true if this address equals another by comparing both components.</summary>
-        public bool Equals(EmailAddress other) =>
+        public bool Equals(EmailAddress? other) =>
             other != null &&
             string.Equals(Address, other.Address, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(DisplayName, other.DisplayName, StringComparison.Ordinal);
 
         /// <summary>Returns true if this address equals another object.</summary>
-        public override bool Equals(object obj) => Equals(obj as EmailAddress);
+        public override bool Equals(object? obj) => Equals(obj as EmailAddress);
 
         /// <summary>Returns a hash code for this address.</summary>
         public override int GetHashCode()

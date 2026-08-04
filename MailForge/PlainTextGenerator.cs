@@ -19,8 +19,8 @@ namespace MailForge
 
         private static readonly Regex CollapseBlankLines = new Regex(@"\n{3,}", RegexOptions.Compiled);
 
-        /// <summary>Generates a plain-text body from an HTML body.</summary>
-        public static string Generate(string html)
+        /// <summary>Generates a plain-text body from an HTML body. Returns null when the input is null.</summary>
+        public static string? Generate(string? html)
         {
             if (string.IsNullOrEmpty(html))
                 return html;

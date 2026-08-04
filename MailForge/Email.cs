@@ -27,19 +27,19 @@ namespace MailForge
         public TModel Model { get; }
 
         /// <summary>The sender address (optional when a global default is configured).</summary>
-        public EmailAddress From { get; private set; }
+        public EmailAddress? From { get; private set; }
 
         /// <summary>The message subject.</summary>
-        public string Subject { get; private set; }
+        public string? Subject { get; private set; }
 
         /// <summary>The name of a registered template used to render this email.</summary>
-        public string TemplateName { get; private set; }
+        public string? TemplateName { get; private set; }
 
         /// <summary>An inline HTML template (used when no named template is set).</summary>
-        public string InlineHtml { get; private set; }
+        public string? InlineHtml { get; private set; }
 
         /// <summary>An inline plain-text template (used when no named template is set).</summary>
-        public string InlineText { get; private set; }
+        public string? InlineText { get; private set; }
 
         /// <summary>The message importance level.</summary>
         public EmailPriority Priority { get; private set; } = EmailPriority.Normal;
@@ -70,24 +70,24 @@ namespace MailForge
         }
 
         /// <summary>Sets the sender address from a raw address string.</summary>
-        protected Email<TModel> SetFrom(string address, string displayName = null) => SetFrom(new EmailAddress(address, displayName));
+        protected Email<TModel> SetFrom(string address, string? displayName = null) => SetFrom(new EmailAddress(address, displayName));
 
         /// <summary>Adds a primary recipient.</summary>
-        protected Email<TModel> AddTo(string address, string displayName = null) =>
+        protected Email<TModel> AddTo(string address, string? displayName = null) =>
             AddRecipient(_to, EmailRecipientType.To, new EmailAddress(address, displayName));
 
         /// <summary>Adds a primary recipient.</summary>
         protected Email<TModel> AddTo(EmailAddress address) => AddRecipient(_to, EmailRecipientType.To, address);
 
         /// <summary>Adds a carbon-copy recipient.</summary>
-        protected Email<TModel> AddCc(string address, string displayName = null) =>
+        protected Email<TModel> AddCc(string address, string? displayName = null) =>
             AddRecipient(_cc, EmailRecipientType.Cc, new EmailAddress(address, displayName));
 
         /// <summary>Adds a carbon-copy recipient.</summary>
         protected Email<TModel> AddCc(EmailAddress address) => AddRecipient(_cc, EmailRecipientType.Cc, address);
 
         /// <summary>Adds a blind-carbon-copy recipient.</summary>
-        protected Email<TModel> AddBcc(string address, string displayName = null) =>
+        protected Email<TModel> AddBcc(string address, string? displayName = null) =>
             AddRecipient(_bcc, EmailRecipientType.Bcc, new EmailAddress(address, displayName));
 
         /// <summary>Adds a blind-carbon-copy recipient.</summary>

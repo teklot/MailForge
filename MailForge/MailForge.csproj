@@ -2,14 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
-    <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>MailForge</Title>
-    <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>MailForge is the core of the MailForge transactional communication ecosystem. Provides the provider-agnostic contracts (IEmailProvider, IEmailSender, EmailMessage, delivery status) and the developer programming model: typed emails, Razor and inline template rendering, auto plain-text generation, validation, middleware pipeline, FakeEmailProvider, and services.AddMailForge(...) DI integration.</Description>
-    <Copyright>Copyright Ac 2026 TekLot</Copyright>
+    <Copyright>Copyright © 2026 TekLot</Copyright>
     <PackageId>MailForge</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
