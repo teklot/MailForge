@@ -1,3 +1,6 @@
+using MailForge.Interfaces;
+using MailForge.Models;
+using MailForge.Providers;
 using MailForge.Templates;
 using MailForge.Validation;
 

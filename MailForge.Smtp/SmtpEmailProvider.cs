@@ -1,11 +1,8 @@
-using System;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 using MailKit;
 using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+using MailForge.Interfaces;
+using MailForge.Models;
+using System.Net.Sockets;
 
 namespace MailForge.Smtp
 {

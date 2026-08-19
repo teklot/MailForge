@@ -1,4 +1,4 @@
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>Describes the capabilities a provider offers.</summary>
     public sealed class ProviderCapabilities

@@ -1,4 +1,4 @@
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>A single validation problem found on an <see cref="EmailMessage"/>.</summary>
     public sealed class ValidationProblem

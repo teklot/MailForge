@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using MailForge.Interfaces;
+using MailForge.Models;
 
 namespace MailForge.Middleware
 {

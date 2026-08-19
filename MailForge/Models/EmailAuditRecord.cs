@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>A record of a single send attempt produced by the framework.</summary>
     public sealed class EmailAuditRecord

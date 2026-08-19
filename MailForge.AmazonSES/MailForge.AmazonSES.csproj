@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>MailForge;Email;TransactionalEmail;AmazonSES;AWS;Provider;API;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Phase 1 framework MVP: Amazon SES v2 provider adapter sending raw MIME messages with attachments, inline images, headers, and tags.</PackageReleaseNotes>
+    <PackageReleaseNotes>Amazon SES v2 provider adapter sending raw MIME messages with attachments, inline images, headers, and tags.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -27,11 +27,6 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.102.1" />
-    <PackageReference Include="MimeKit" Version="4.17.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="MailForge.Tests" />
   </ItemGroup>
 
 </Project>

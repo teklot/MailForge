@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MailForge.Interfaces;
+using MailForge.Models;
 
-namespace MailForge
+namespace MailForge.Providers
 {
     /// <summary>
     /// A provider that never delivers anything. It records every message sent through it in

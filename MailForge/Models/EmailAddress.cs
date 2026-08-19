@@ -1,6 +1,6 @@
 using System;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>Represents an email address with an optional display name.</summary>
     public sealed class EmailAddress : IEquatable<EmailAddress>

@@ -1,5 +1,3 @@
-using System;
-
 namespace MailForge.AmazonSES
 {
     /// <summary>Configuration for the Amazon SES provider.</summary>

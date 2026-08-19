@@ -1,4 +1,6 @@
+using MailForge.Interfaces;
 using MailForge.Middleware;
+using MailForge.Models;
 
 namespace MailForge.Tests
 {

@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MailForge.Models;
 
-namespace MailForge
+namespace MailForge.Interfaces
 {
     /// <summary>
     /// The high-level entry point used by application code to send emails. The default

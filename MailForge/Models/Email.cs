@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>
     /// Base class for strongly typed transactional emails. Subclasses configure the message

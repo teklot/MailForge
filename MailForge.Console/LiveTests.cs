@@ -2,6 +2,8 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using MailForge.AmazonSES;
+using MailForge.Interfaces;
+using MailForge.Models;
 using MailForge.Resend;
 using MailForge.Smtp;
 

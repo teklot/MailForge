@@ -1,3 +1,4 @@
+using MailForge.Models;
 
 namespace MailForge.Tests
 {

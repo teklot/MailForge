@@ -1,5 +1,6 @@
 using System.Reflection;
 using MailForge.AmazonSES;
+using MailForge.Models;
 using MailForge.Resend;
 using MailForge.Smtp;
 
@@ -27,7 +28,7 @@ namespace MailForge.Tests
         {
             var version = markerType.Assembly.GetName().Version;
             Assert.NotNull(version);
-            Assert.StartsWith("0.1.0.", version.ToString());
+            Assert.StartsWith("0.2.0.", version.ToString());
         }
 
         [Fact]

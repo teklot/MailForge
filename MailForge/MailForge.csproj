@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>MailForge;Email;TransactionalEmail;SMTP;Framework;Core;Abstractions;Pipeline;Validation;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Phase 1 framework MVP: typed Email&lt;TModel&gt;, Razor and inline template rendering, auto plain-text generation, middleware pipeline (logging, retries, auditing), validation, FakeEmailProvider, and services.AddMailForge(...) DI integration.</PackageReleaseNotes>
+    <PackageReleaseNotes>Typed Email&lt;TModel&gt;, Razor and inline template rendering, auto plain-text generation, middleware pipeline (logging, retries, auditing), validation, FakeEmailProvider, and services.AddMailForge(...) DI integration.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -24,6 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
+    <PackageReference Include="MimeKit" Version="4.17.0" />
     <PackageReference Include="RazorEngineCore" Version="2026.1.1" />
   </ItemGroup>
 

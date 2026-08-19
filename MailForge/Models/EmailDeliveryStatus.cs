@@ -1,4 +1,4 @@
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>The possible outcomes of an email send.</summary>
     public enum EmailDeliveryStatus

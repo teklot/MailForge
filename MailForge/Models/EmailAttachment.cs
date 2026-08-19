@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>An attachment (or inline image) attached to an email message.</summary>
     public sealed class EmailAttachment

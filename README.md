@@ -24,8 +24,8 @@ that one vendor, so swapping providers rewrites your email classes. MailForge fi
 one strongly typed programming model, a real delivery pipeline, and failover across providers —
 without tying your business logic to any single service.
 
-| | MailKit / SmtpClient | Vendor SDKs (Resend, SendGrid, SES) | FluentEmail | **MailForge** |
-|---|---|---|---|---|
+| | MailKit / SmtpClient | Vendor SDKs<br>(Resend, SendGrid, SES) | FluentEmail | **MailForge** |
+|---|:---:|:---:|:---:|:---:|
 | Typed emails (`Email<TModel>`) | ✗ | ✗ | ✗ | ✔ |
 | Razor + inline templates | ✗ | ✗ | add-on | ✔ |
 | Auto plain-text generation | ✗ | ✗ | ✗ | ✔ |
@@ -128,6 +128,20 @@ omit `UseProvider` to send through the in-memory `FakeEmailProvider`.
 
 Each provider ships in its own package and is registered on the builder the same way;
 swap providers without touching your email classes.
+
+| Provider | Package | Attachments | Inline images | Headers | Tags | Status |
+|---|---|:---:|:---:|:---:|:---:|---|
+| **SMTP** | `MailForge.Smtp` | ✔ | ✔ | ✔ | ✔¹ | Shipped |
+| **Resend** | `MailForge.Resend` | ✔ | ✗ | ✔ | ✔ | Shipped |
+| **Amazon SES** | `MailForge.AmazonSES` | ✔ | ✔ | ✔ | ✔ | Shipped |
+| **Postmark** | `MailForge.Postmark` | ✗ | ✗ | ✗ | ✗ | Planned |
+| **Mailgun** | `MailForge.Mailgun` | ✗ | ✗ | ✗ | ✗ | Planned |
+| **Brevo** | `MailForge.Brevo` | ✗ | ✗ | ✗ | ✗ | Planned |
+| **Azure Communication Services** | `MailForge.AzureCommunicationServices` | ✗ | ✗ | ✗ | ✗ | Planned |
+| **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✗ | ✗ | ✗ | ✗ | Planned |
+
+¹ SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers. Planned providers
+are on the roadmap; capability support will be confirmed as each ships.
 
 ### SMTP
 

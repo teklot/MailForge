@@ -1,4 +1,8 @@
 using System.Threading.Tasks;
+using MailForge.Extensions;
+using MailForge.Interfaces;
+using MailForge.Models;
+using MailForge.Providers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MailForge.Tests

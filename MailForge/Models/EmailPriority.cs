@@ -1,4 +1,4 @@
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>Indicates the importance level of an email message.</summary>
     public enum EmailPriority

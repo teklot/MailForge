@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>
     /// The outcome of sending an email through the framework pipeline.

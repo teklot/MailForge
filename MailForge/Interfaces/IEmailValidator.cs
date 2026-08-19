@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MailForge.Models;
 
-namespace MailForge
+namespace MailForge.Interfaces
 {
     /// <summary>
     /// Validates an <see cref="EmailMessage"/> before it is delivered. Validators are invoked

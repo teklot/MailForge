@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MailForge.Builders;
+using MailForge.Interfaces;
+using MailForge.Models;
 
 namespace MailForge.Tests
 {

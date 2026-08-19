@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MailForge.Builders;
+using MailForge.Interfaces;
 using MailForge.Middleware;
+using MailForge.Models;
+using MailForge.Providers;
 using MailForge.Templates;
 using MailForge.Validation;
 
-namespace MailForge
+namespace MailForge.Extensions
 {
     /// <summary>Dependency-injection extensions for the MailForge framework.</summary>
     public static class ServiceCollectionExtensions

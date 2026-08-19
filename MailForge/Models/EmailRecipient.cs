@@ -1,6 +1,6 @@
 using System;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>A single message recipient together with its role (To, Cc, or Bcc).</summary>
     public sealed class EmailRecipient

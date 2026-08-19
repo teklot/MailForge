@@ -1,6 +1,6 @@
 using System;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>
     /// The exception thrown by providers and by the framework when an email cannot be sent.

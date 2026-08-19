@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>MailForge;Email;TransactionalEmail;Resend;Provider;API;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Phase 1 framework MVP: Resend API provider adapter supporting HTML/text, attachments, custom headers, and tags.</PackageReleaseNotes>
+    <PackageReleaseNotes>Resend API provider adapter supporting HTML/text, attachments, custom headers, and tags.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

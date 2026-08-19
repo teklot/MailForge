@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MailForge.Builders;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>
     /// An immutable, provider-agnostic email message. This is the payload exchanged between
-    /// the framework, the middleware pipeline, and every <see cref="IEmailProvider"/>.
+    /// the framework, the middleware pipeline, and every <see cref="Interfaces.IEmailProvider"/>.
     /// </summary>
     public sealed class EmailMessage
     {

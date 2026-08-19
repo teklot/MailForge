@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MailForge.Models;
 
-namespace MailForge
+namespace MailForge.Interfaces
 {
     /// <summary>
     /// A delivery channel that can transmit an <see cref="EmailMessage"/> to its recipients.

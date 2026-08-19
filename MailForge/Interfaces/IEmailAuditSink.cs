@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MailForge.Models;
 
-namespace MailForge
+namespace MailForge.Interfaces
 {
     /// <summary>
     /// Receives a record of every send attempt. An audit sink is the recommended place to

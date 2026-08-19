@@ -1,4 +1,5 @@
 using System;
+using MailForge.Interfaces;
 
 namespace MailForge
 {

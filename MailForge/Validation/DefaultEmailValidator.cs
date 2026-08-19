@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using MailForge.Interfaces;
+using MailForge.Models;
 
 namespace MailForge.Validation
 {

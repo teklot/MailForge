@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MailForge.Interfaces;
+using MailForge.Models;
 using MailForge.Templates;
 
-namespace MailForge
+namespace MailForge.Builders
 {
     /// <summary>
     /// Fluent configuration for the MailForge framework. Passed to
-    /// <see cref="MailForge.ServiceCollectionExtensions.AddMailForge"/> to select a provider,
+    /// see <see cref="Extensions.ServiceCollectionExtensions.AddMailForge"/> to select a provider,
     /// register templates, validators, and middleware, and tune delivery behavior.
     /// </summary>
     public sealed class MailForgeBuilder
@@ -22,7 +24,7 @@ namespace MailForge
         internal IList<IEmailValidator> Validators { get; } = new List<IEmailValidator>();
         internal IList<IEmailMiddleware> Middleware { get; } = new List<IEmailMiddleware>();
 
-        /// <summary>Selects the provider that delivers messages. Defaults to <see cref="FakeEmailProvider"/>.</summary>
+        /// <summary>Selects the provider that delivers messages. Defaults to <see cref="Providers.FakeEmailProvider"/>.</summary>
         public MailForgeBuilder UseProvider(IEmailProvider provider)
         {
             Provider = provider ?? throw new ArgumentNullException(nameof(provider));

@@ -7,7 +7,7 @@ namespace MailForge
     public sealed class FailoverPolicy
     {
         /// <summary>
-        /// Fails over only on transient <see cref="EmailException"/> failures (timeouts, rate
+        /// Fails over only on transient <see cref="Models.EmailException"/> failures (timeouts, rate
         /// limits, temporary service errors). Permanent failures and rejected messages are
         /// surfaced to the caller as-is so they are not retried through other providers.
         /// </summary>

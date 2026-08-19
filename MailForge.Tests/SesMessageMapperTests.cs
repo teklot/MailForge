@@ -1,4 +1,5 @@
 using MailForge.AmazonSES;
+using MailForge.Models;
 
 namespace MailForge.Tests
 {

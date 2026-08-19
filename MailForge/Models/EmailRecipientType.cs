@@ -1,4 +1,4 @@
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>Specifies the role of a recipient on an email message.</summary>
     public enum EmailRecipientType

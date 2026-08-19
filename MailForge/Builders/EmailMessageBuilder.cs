@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using MailForge.Models;
 
-namespace MailForge
+namespace MailForge.Builders
 {
     /// <summary>Fluent builder used to construct an <see cref="EmailMessage"/>.</summary>
     public sealed class EmailMessageBuilder

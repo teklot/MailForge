@@ -2,6 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MailForge;
+using MailForge.Extensions;
+using MailForge.Interfaces;
+using MailForge.Models;
+using MailForge.Providers;
 
 namespace MailForge.Console
 {

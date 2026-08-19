@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MailForge.Models;
 using MailForge.Smtp;
 
 namespace MailForge.Tests

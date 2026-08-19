@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>
-    /// Immutable state shared by every <see cref="IEmailMiddleware"/> in the pipeline for a
+    /// Immutable state shared by every <see cref="Interfaces.IEmailMiddleware"/> in the pipeline for a
     /// single send operation. The message can be mutated between stages.
     /// </summary>
     public sealed class EmailDeliveryContext

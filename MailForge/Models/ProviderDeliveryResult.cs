@@ -1,9 +1,9 @@
 using System;
 
-namespace MailForge
+namespace MailForge.Models
 {
     /// <summary>
-    /// The outcome of a single delivery attempt reported by an <see cref="IEmailProvider"/>.
+    /// The outcome of a single delivery attempt reported by an <see cref="Interfaces.IEmailProvider"/>.
     /// Providers report transient service failures by throwing <see cref="EmailException"/>
     /// with <see cref="EmailException.IsTransient"/> set to true.
     /// </summary>
