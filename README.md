@@ -3,7 +3,6 @@
 [![CI](https://github.com/teklot/MailForge/actions/workflows/ci.yml/badge.svg)](https://github.com/teklot/MailForge/actions/workflows/ci.yml)
 [![NuGet Version](https://img.shields.io/nuget/v/MailForge)](https://www.nuget.org/packages/MailForge)
 [![.NET](https://img.shields.io/badge/.NET-net10.0%20%7C%20netstandard2.0-blue)](https://dotnet.microsoft.com/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](LICENSE)
 
 MailForge is a unified, layered transactional communication ecosystem for .NET applications. It bridges the gap between lightweight email libraries and large third-party email providers by offering a provider-agnostic framework, a local developer studio, and a self-hosted gateway server.
 
@@ -134,11 +133,11 @@ swap providers without touching your email classes.
 | **SMTP** | `MailForge.Smtp` | ✔ | ✔ | ✔ | ✔¹ | Shipped |
 | **Resend** | `MailForge.Resend` | ✔ | ✗ | ✔ | ✔ | Shipped |
 | **Amazon SES** | `MailForge.AmazonSES` | ✔ | ✔ | ✔ | ✔ | Shipped |
-| **Postmark** | `MailForge.Postmark` | ✗ | ✗ | ✗ | ✗ | Planned |
-| **Mailgun** | `MailForge.Mailgun` | ✗ | ✗ | ✗ | ✗ | Planned |
-| **Brevo** | `MailForge.Brevo` | ✗ | ✗ | ✗ | ✗ | Planned |
+| **Postmark** | `MailForge.Postmark` | ✔ | ✔ | ✔ | ✔ | Shipped |
+| **Mailgun** | `MailForge.Mailgun` | ✔ | ✔ | ✔ | ✔ | Shipped |
+| **Brevo** | `MailForge.Brevo` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Azure Communication Services** | `MailForge.AzureCommunicationServices` | ✗ | ✗ | ✗ | ✗ | Planned |
-| **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✗ | ✗ | ✗ | ✗ | Planned |
+| **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✔ | ✔ | ✗ | ✗ | Shipped |
 
 ¹ SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers. Planned providers
 are on the roadmap; capability support will be confirmed as each ships.
@@ -184,6 +183,59 @@ services.AddMailForge(builder => builder.UseProvider(new AmazonSesEmailProvider(
 ```
 
 When `AccessKey`/`SecretKey` are omitted, the AWS SDK default credential chain is used.
+
+### Postmark
+
+```csharp
+using MailForge.Postmark;
+
+services.AddMailForge(builder => builder.UseProvider(new PostmarkEmailProvider(new PostmarkOptions
+{
+    ServerToken = "your-server-token"
+})));
+```
+
+Authenticates via `X-Postmark-Server-Token` header. Supports message streams, tags, and custom headers.
+
+### Mailgun
+
+```csharp
+using MailForge.Mailgun;
+
+services.AddMailForge(builder => builder.UseProvider(new MailgunEmailProvider(new MailgunOptions
+{
+    ApiKey = "key-...",
+    Domain = "mg.example.com"
+})));
+```
+
+Authenticates via HTTP Basic auth (`api:{key}`). Sends as multipart/form-data with `o:tag` and `h:*` fields for tags and custom headers.
+
+### Brevo
+
+```csharp
+using MailForge.Brevo;
+
+services.AddMailForge(builder => builder.UseProvider(new BrevoEmailProvider(new BrevoOptions
+{
+    ApiKey = "xkeysib-..."
+})));
+```
+
+Authenticates via `api-key` header. Supports tags and custom headers.
+
+### ZeptoMail (Zoho)
+
+```csharp
+using MailForge.ZeptoMail;
+
+services.AddMailForge(builder => builder.UseProvider(new ZeptoMailEmailProvider(new ZeptoMailOptions
+{
+    SendApiKey = "your-send-api-key"
+})));
+```
+
+Authenticates via `Zoho-enczapikey` header. Tags and custom headers are not supported by the ZeptoMail API.
 
 ## Failover
 
@@ -263,6 +315,3 @@ MailForge.Console/      Sample console application
 - **.NET 10+**: Optimized for high-performance runtimes and modern C# idioms.
 - **.NET Standard 2.0**: Broad compatibility across .NET 5+, .NET Core 2.0+, and .NET Framework 4.6.1+.
 
-## License
-
-Apache License 2.0. See [LICENSE](LICENSE).

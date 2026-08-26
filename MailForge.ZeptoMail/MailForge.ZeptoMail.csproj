@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>MailForge.ZeptoMail</Title>
+    <Description>MailForge.ZeptoMail is a provider adapter for the MailForge transactional communication ecosystem. Delivers MailForge messages through the Zoho ZeptoMail email API.</Description>
+    <Copyright>Copyright © 2026 TekLot</Copyright>
+    <PackageId>MailForge.ZeptoMail</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>MailForge;Email;TransactionalEmail;ZeptoMail;Zoho;Provider;API;dotnet-library</PackageTags>
+    <PackageReleaseNotes>ZeptoMail (Zoho) API provider adapter supporting HTML/text, attachments, and inline images.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MailForge\MailForge.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="10.0.10" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+  </ItemGroup>
+
+</Project>

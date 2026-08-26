@@ -28,6 +28,10 @@
     <ProjectReference Include="..\MailForge.Smtp\MailForge.Smtp.csproj" />
     <ProjectReference Include="..\MailForge.Resend\MailForge.Resend.csproj" />
     <ProjectReference Include="..\MailForge.AmazonSES\MailForge.AmazonSES.csproj" />
+    <ProjectReference Include="..\MailForge.Postmark\MailForge.Postmark.csproj" />
+    <ProjectReference Include="..\MailForge.Brevo\MailForge.Brevo.csproj" />
+    <ProjectReference Include="..\MailForge.ZeptoMail\MailForge.ZeptoMail.csproj" />
+    <ProjectReference Include="..\MailForge.Mailgun\MailForge.Mailgun.csproj" />
   </ItemGroup>
 
 </Project>
