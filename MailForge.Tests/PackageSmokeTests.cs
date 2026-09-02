@@ -1,5 +1,6 @@
 using System.Reflection;
 using MailForge.AmazonSES;
+using MailForge.AzureCS;
 using MailForge.Brevo;
 using MailForge.Mailgun;
 using MailForge.Models;
@@ -21,6 +22,7 @@ namespace MailForge.Tests
         [InlineData(typeof(BrevoEmailProvider), "MailForge.Brevo")]
         [InlineData(typeof(ZeptoMailEmailProvider), "MailForge.ZeptoMail")]
         [InlineData(typeof(MailgunEmailProvider), "MailForge.Mailgun")]
+        [InlineData(typeof(AzureCSEmailProvider), "MailForge.AzureCS")]
         public void PackageMarker_MatchesPackageId(Type markerType, string expectedPackageId)
         {
             Assert.Equal(expectedPackageId, markerType.Assembly.GetName().Name);
@@ -36,11 +38,12 @@ namespace MailForge.Tests
         [InlineData(typeof(BrevoEmailProvider))]
         [InlineData(typeof(ZeptoMailEmailProvider))]
         [InlineData(typeof(MailgunEmailProvider))]
+        [InlineData(typeof(AzureCSEmailProvider))]
         public void LibraryAssemblies_AreVersionedFromDirectoryBuildProps(Type markerType)
         {
             var version = markerType.Assembly.GetName().Version;
             Assert.NotNull(version);
-            Assert.StartsWith("0.3.0.", version.ToString());
+            Assert.StartsWith("0.4.0.", version.ToString());
         }
 
         [Fact]
@@ -57,11 +60,12 @@ namespace MailForge.Tests
                 Assembly.GetAssembly(typeof(BrevoEmailProvider)),
                 Assembly.GetAssembly(typeof(ZeptoMailEmailProvider)),
                 Assembly.GetAssembly(typeof(MailgunEmailProvider)),
+                Assembly.GetAssembly(typeof(AzureCSEmailProvider)),
             };
 
-            Assert.Equal(9, assemblies.Length);
+            Assert.Equal(10, assemblies.Length);
             Assert.All(assemblies, a => Assert.NotNull(a));
-            Assert.Equal(8, assemblies.Distinct().Count());
+            Assert.Equal(9, assemblies.Distinct().Count());
         }
     }
 }

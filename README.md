@@ -3,6 +3,7 @@
 [![CI](https://github.com/teklot/MailForge/actions/workflows/ci.yml/badge.svg)](https://github.com/teklot/MailForge/actions/workflows/ci.yml)
 [![NuGet Version](https://img.shields.io/nuget/v/MailForge)](https://www.nuget.org/packages/MailForge)
 [![.NET](https://img.shields.io/badge/.NET-net10.0%20%7C%20netstandard2.0-blue)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 MailForge is a unified, layered transactional communication ecosystem for .NET applications. It bridges the gap between lightweight email libraries and large third-party email providers by offering a provider-agnostic framework, a local developer studio, and a self-hosted gateway server.
 
@@ -13,6 +14,27 @@ await emailSender.SendAsync(new WelcomeEmail(userModel));
 ```
 
 **Guiding principle:** Provider-agnostic by design. Business logic never couples to a specific sending service.
+
+## Table of Contents
+
+- [Why MailForge?](#why-mailforge)
+- [How It Works](#how-it-works)
+- [Packages](#packages)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Providers](#providers)
+  - [SMTP](#smtp)
+  - [Resend](#resend)
+  - [Amazon SES](#amazon-ses)
+  - [Postmark](#postmark)
+  - [Mailgun](#mailgun)
+  - [Brevo](#brevo)
+  - [ZeptoMail (Zoho)](#zeptomail-zoho)
+  - [Azure Communication Services](#azure-communication-services)
+- [Failover](#failover)
+- [Live Testing](#live-testing)
+- [Repository Layout](#repository-layout)
+- [Supported Frameworks](#supported-frameworks)
 
 ## Why MailForge?
 
@@ -64,7 +86,7 @@ MailForge is structured into four progressive layers that evolve without archite
 ```
 
 1. **Layer 1 — Core Framework** (`MailForge`): Provider-agnostic contracts plus the developer programming model: typed emails, pipeline, validation, middleware, template rendering, and multi-provider failover with precedence (.NET Standard 2.0 compatible).
-2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`): Connectors handling authentication, external API communication, and delivery responses.
+2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`, `MailForge.Postmark`, `MailForge.Mailgun`, `MailForge.Brevo`, `MailForge.AzureCS`, `MailForge.ZeptoMail`): Connectors handling authentication, external API communication, and delivery responses.
 3. **Layer 3 — Local Studio** (`MailForge.Studio`): ASP.NET Core MVC + HTMX + Bootstrap web companion for local testing, email inspection, live preview, and message replay.
 4. **Layer 4 — Gateway** (`MailForge.Server`): Self-hosted service exposing the failover engine over REST with an async delivery queue and normalized webhooks.
 
@@ -76,6 +98,11 @@ MailForge is structured into four progressive layers that evolve without archite
 | **MailForge.Smtp** | SMTP provider adapter for routing messages to any standard SMTP server |
 | **MailForge.Resend** | Resend API provider adapter |
 | **MailForge.AmazonSES** | Amazon Simple Email Service provider adapter |
+| **MailForge.Postmark** | Postmark API provider adapter |
+| **MailForge.Mailgun** | Mailgun API provider adapter |
+| **MailForge.Brevo** | Brevo API provider adapter |
+| **MailForge.AzureCS** | Azure Communication Services email provider adapter |
+| **MailForge.ZeptoMail** | ZeptoMail (Zoho) API provider adapter |
 
 ## Installation
 
@@ -84,6 +111,11 @@ dotnet add package MailForge
 dotnet add package MailForge.Smtp
 dotnet add package MailForge.Resend
 dotnet add package MailForge.AmazonSES
+dotnet add package MailForge.Postmark
+dotnet add package MailForge.Mailgun
+dotnet add package MailForge.Brevo
+dotnet add package MailForge.AzureCS
+dotnet add package MailForge.ZeptoMail
 ```
 
 ## Quick Start
@@ -136,11 +168,10 @@ swap providers without touching your email classes.
 | **Postmark** | `MailForge.Postmark` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Mailgun** | `MailForge.Mailgun` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Brevo** | `MailForge.Brevo` | ✔ | ✔ | ✔ | ✔ | Shipped |
-| **Azure Communication Services** | `MailForge.AzureCommunicationServices` | ✗ | ✗ | ✗ | ✗ | Planned |
+| **Azure Communication Services** | `MailForge.AzureCS` | ✔ | ✔ | ✔ | ✗ | Shipped |
 | **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✔ | ✔ | ✗ | ✗ | Shipped |
 
-¹ SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers. Planned providers
-are on the roadmap; capability support will be confirmed as each ships.
+¹ SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers.
 
 ### SMTP
 
@@ -237,6 +268,21 @@ services.AddMailForge(builder => builder.UseProvider(new ZeptoMailEmailProvider(
 
 Authenticates via `Zoho-enczapikey` header. Tags and custom headers are not supported by the ZeptoMail API.
 
+### Azure Communication Services
+
+```csharp
+using MailForge.AzureCS;
+
+services.AddMailForge(builder => builder.UseProvider(new AzureCSEmailProvider(new AzureCSOptions
+{
+    Endpoint = "https://my-resource.communication.azure.com",
+    AccessKey = "your-access-key",
+    SenderAddress = "noreply@example.com"
+})));
+```
+
+Signs requests with HMAC-SHA256 over `x-ms-date`, `host`, and `x-ms-content-sha256` headers via HttpClient — no Azure SDK dependency. `SenderAddress` must be a verified domain. Inline images are embedded as `data:` URIs in the HTML body. Tags are not supported by the Azure API.
+
 ## Failover
 
 A `FailoverEmailProvider` tries a precedence-ordered chain of providers until one succeeds,
@@ -287,6 +333,21 @@ dotnet run --project MailForge.Console -- live-resend [apiKey] [to]
 
 # Amazon SES (region as argument or AWS_REGION; credentials from the default AWS chain)
 dotnet run --project MailForge.Console -- live-ses [region] [to]
+
+# Postmark (server token as argument or POSTMARK_SERVER_TOKEN)
+dotnet run --project MailForge.Console -- live-postmark [serverToken] [to]
+
+# Mailgun (API key + domain as arguments or MAILGUN_API_KEY / MAILGUN_DOMAIN)
+dotnet run --project MailForge.Console -- live-mailgun [apiKey] [domain] [to]
+
+# Brevo (API key as argument or BREVO_API_KEY)
+dotnet run --project MailForge.Console -- live-brevo [apiKey] [to]
+
+# ZeptoMail (API key as argument or ZEPTOMAIL_SEND_API_KEY)
+dotnet run --project MailForge.Console -- live-zeptomail [sendApiKey] [to]
+
+# Azure Communication Services (endpoint, access key, and verified sender as arguments or AZURE_COMMUNICATION_*)
+dotnet run --project MailForge.Console -- live-azurecs [endpoint] [accessKey] [sender] [to]
 ```
 
 Environment variables honored by the live tests:
@@ -296,6 +357,11 @@ Environment variables honored by the live tests:
 | `RESEND_API_KEY` | Resend API key (also accepted as an argument) |
 | `AWS_REGION` | SES region (also accepted as an argument) |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | SES credentials |
+| `POSTMARK_SERVER_TOKEN` | Postmark server token (also as an argument) |
+| `MAILGUN_API_KEY` / `MAILGUN_DOMAIN` | Mailgun credentials (also as arguments) |
+| `BREVO_API_KEY` | Brevo API key (also as an argument) |
+| `ZEPTOMAIL_SEND_API_KEY` | ZeptoMail API key (also as an argument) |
+| `AZURE_COMMUNICATION_ENDPOINT` / `AZURE_COMMUNICATION_ACCESS_KEY` / `AZURE_COMMUNICATION_SENDER` | Azure Communication Services (also as arguments) |
 | `LIVE_FROM` | Sender address (default `sender@example.com`) |
 | `LIVE_TO` | Recipient address (default `recipient@example.com`) |
 
@@ -306,6 +372,11 @@ MailForge/              Layer 1 core framework + contracts (typed emails, pipeli
 MailForge.Smtp/         Layer 2 SMTP provider
 MailForge.Resend/       Layer 2 Resend provider
 MailForge.AmazonSES/    Layer 2 Amazon SES provider
+MailForge.Postmark/     Layer 2 Postmark provider
+MailForge.Mailgun/      Layer 2 Mailgun provider
+MailForge.Brevo/        Layer 2 Brevo provider
+MailForge.AzureCS/      Layer 2 Azure Communication Services provider
+MailForge.ZeptoMail/    Layer 2 ZeptoMail provider
 MailForge.Tests/        xUnit test suite
 MailForge.Console/      Sample console application
 ```
