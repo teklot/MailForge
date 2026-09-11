@@ -33,6 +33,7 @@
     <ProjectReference Include="..\MailForge.ZeptoMail\MailForge.ZeptoMail.csproj" />
     <ProjectReference Include="..\MailForge.Mailgun\MailForge.Mailgun.csproj" />
     <ProjectReference Include="..\MailForge.AzureCS\MailForge.AzureCS.csproj" />
+    <ProjectReference Include="..\MailForge.Studio\MailForge.Studio.csproj" />
   </ItemGroup>
 
 </Project>

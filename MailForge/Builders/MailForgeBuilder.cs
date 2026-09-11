@@ -15,6 +15,7 @@ namespace MailForge.Builders
     public sealed class MailForgeBuilder
     {
         internal IEmailProvider? Provider { get; private set; }
+        internal Func<IServiceProvider, IEmailProvider>? ProviderFactory { get; private set; }
         internal EmailAddress? DefaultFrom { get; private set; }
         internal bool AutoPlainText { get; private set; } = true;
         internal int MaxRetryAttempts { get; private set; } = 3;
@@ -28,6 +29,16 @@ namespace MailForge.Builders
         public MailForgeBuilder UseProvider(IEmailProvider provider)
         {
             Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            return this;
+        }
+
+        /// <summary>
+        /// Selects a provider that is resolved from the service provider when the pipeline
+        /// is built. Useful for providers registered in dependency injection.
+        /// </summary>
+        public MailForgeBuilder UseProvider(Func<IServiceProvider, IEmailProvider> factory)
+        {
+            ProviderFactory = factory ?? throw new ArgumentNullException(nameof(factory));
             return this;
         }
 

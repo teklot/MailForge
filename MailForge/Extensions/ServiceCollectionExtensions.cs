@@ -30,9 +30,10 @@ namespace MailForge.Extensions
             var builder = new MailForgeBuilder();
             configure(builder);
 
-            var provider = builder.Provider ?? new FakeEmailProvider();
-
-            services.AddSingleton<IEmailProvider>(provider);
+            services.AddSingleton<IEmailProvider>(sp =>
+                builder.ProviderFactory != null
+                    ? builder.ProviderFactory(sp)
+                    : (builder.Provider ?? new FakeEmailProvider()));
             services.AddSingleton<ITemplateRegistry>(builder.Templates);
             services.AddSingleton<IInlineTemplateRenderer>(new InlineTemplateRenderer());
             services.AddSingleton<IEmailTemplateRenderer>(new RazorEmailTemplateRenderer());
@@ -50,7 +51,7 @@ namespace MailForge.Extensions
                     new LoggingEmailMiddleware(sp.GetService<ILogger<LoggingEmailMiddleware>>())
                 };
                 if (builder.AuditSink != null)
-                    pipeline.Add(new AuditEmailMiddleware(builder.AuditSink, provider.Name));
+                    pipeline.Add(new AuditEmailMiddleware(builder.AuditSink, sp.GetRequiredService<IEmailProvider>().Name));
                 pipeline.AddRange(builder.Middleware);
 
                 var validators = new List<IEmailValidator> { new DefaultEmailValidator() };

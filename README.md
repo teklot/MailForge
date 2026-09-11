@@ -33,6 +33,7 @@ await emailSender.SendAsync(new WelcomeEmail(userModel));
   - [Azure Communication Services](#azure-communication-services)
 - [Failover](#failover)
 - [Live Testing](#live-testing)
+- [Studio Demo](#studio-demo)
 - [Repository Layout](#repository-layout)
 - [Supported Frameworks](#supported-frameworks)
 
@@ -87,7 +88,7 @@ MailForge is structured into four progressive layers that evolve without archite
 
 1. **Layer 1 — Core Framework** (`MailForge`): Provider-agnostic contracts plus the developer programming model: typed emails, pipeline, validation, middleware, template rendering, and multi-provider failover with precedence (.NET Standard 2.0 compatible).
 2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`, `MailForge.Postmark`, `MailForge.Mailgun`, `MailForge.Brevo`, `MailForge.AzureCS`, `MailForge.ZeptoMail`): Connectors handling authentication, external API communication, and delivery responses.
-3. **Layer 3 — Local Studio** (`MailForge.Studio`): ASP.NET Core MVC + HTMX + Bootstrap web companion for local testing, email inspection, live preview, and message replay.
+3. **Layer 3 — Local Studio** (`MailForge.Studio`): In-repo project providing a local inbox backend in the `MailForge.Studio.Capture` namespace: a `StudioEmailProvider` that persists everything the pipeline sends to a SQLite local inbox, plus a lightweight SMTP relay that captures mail from any SMTP client.
 4. **Layer 4 — Gateway** (`MailForge.Server`): Self-hosted service exposing the failover engine over REST with an async delivery queue and normalized webhooks.
 
 ## Packages
@@ -103,6 +104,8 @@ MailForge is structured into four progressive layers that evolve without archite
 | **MailForge.Brevo** | Brevo API provider adapter |
 | **MailForge.AzureCS** | Azure Communication Services email provider adapter |
 | **MailForge.ZeptoMail** | ZeptoMail (Zoho) API provider adapter |
+
+Studio is an in-repo local-dev project and is covered in [Studio Demo](#studio-demo), not as a package above.
 
 ## Installation
 
@@ -322,7 +325,8 @@ delivered the message.
 
 The sample console app includes live integration checks that send a real message through a
 provider. They are handy for verifying a provider against [smtp4dev](https://github.com/rnwood/smtp4dev)
-or a real service before relying on it in production.
+or a real service before relying on it in production. Running the console with **no arguments**
+shows an interactive menu of every command (demo walkthrough, Studio, and all live tests).
 
 ```shell
 # SMTP (smtp4dev on localhost:25, or any SMTP server)
@@ -365,6 +369,26 @@ Environment variables honored by the live tests:
 | `LIVE_FROM` | Sender address (default `sender@example.com`) |
 | `LIVE_TO` | Recipient address (default `recipient@example.com`) |
 
+## Studio Demo
+
+The `studio-demo` command exercises **MailForge.Studio** locally — no credentials or network
+needed. Studio is wired into the MailForge pipeline, sends a few sample messages, starts the
+local SMTP relay, and prints the captured inbox. You can point any SMTP client (MailKit,
+`SmtpClient`, telnet) at the printed port to watch its traffic land in the local inbox.
+
+In dev you can register `StudioEmailProvider` as your provider (or as the first route in a
+`FailoverEmailProvider` to capture and mirror to your real provider) so every message your app
+sends through MailForge lands in the local inbox instead of being delivered; the SMTP relay is a
+catch-all for any client that cannot use the pipeline.
+
+```shell
+# Default relay port 2525
+dotnet run --project MailForge.Console -- studio-demo
+
+# Ephemeral port (printed by the demo), useful to avoid port conflicts
+dotnet run --project MailForge.Console -- studio-demo 0
+```
+
 ## Repository Layout
 
 ```
@@ -377,8 +401,9 @@ MailForge.Mailgun/      Layer 2 Mailgun provider
 MailForge.Brevo/        Layer 2 Brevo provider
 MailForge.AzureCS/      Layer 2 Azure Communication Services provider
 MailForge.ZeptoMail/    Layer 2 ZeptoMail provider
+MailForge.Studio/       Layer 3 local Studio (Capture/ folder: SQLite store + SMTP relay)
 MailForge.Tests/        xUnit test suite
-MailForge.Console/      Sample console application
+MailForge.Console/      Sample console application (live tests + studio-demo)
 ```
 
 ## Supported Frameworks
