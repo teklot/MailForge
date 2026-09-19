@@ -6,6 +6,7 @@ using MailForge.Interfaces;
 using MailForge.Models;
 using MailForge.Studio.Capture;
 using MailForge.Studio.Capture.Entities;
+using MailForge.Studio.Web;
 
 namespace MailForge.Tests
 {
@@ -35,6 +36,12 @@ namespace MailForge.Tests
                 int take = 50,
                 CancellationToken cancellationToken = default) =>
                 Task.FromResult<IReadOnlyList<CapturedMessage>>(Array.Empty<CapturedMessage>());
+
+            public Task<StudioMessagePage> QueryAsync(StudioMessageQuery query, CancellationToken cancellationToken = default) =>
+                Task.FromResult(new StudioMessagePage());
+
+            public Task<CapturedAttachment?> GetAttachmentAsync(Guid attachmentId, CancellationToken cancellationToken = default) =>
+                Task.FromResult<CapturedAttachment?>(null);
         }
 
         [Fact]

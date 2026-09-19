@@ -28,9 +28,8 @@ namespace MailForge.Console
         public static async Task RunAsync(string[] args)
         {
             var relayPort = int.TryParse(Arg(args, 1, "2525"), out var parsed) ? parsed : 2525;
-            var databasePath = Path.Combine(Path.GetTempPath(), "mailforge-studio-demo.db");
-            if (File.Exists(databasePath))
-                File.Delete(databasePath);
+            // Shared with studio-web so the seeded messages show up in the dashboard.
+            var databasePath = Path.Combine(Path.GetTempPath(), "mailforge-studio.db");
 
             var services = new ServiceCollection();
             services.AddMailForgeStudio(options =>
@@ -61,8 +60,11 @@ namespace MailForge.Console
                 await sender.SendAsync(BuildWelcome(), System.Threading.CancellationToken.None);
                 await sender.SendAsync(BuildOrderConfirmation(), System.Threading.CancellationToken.None);
                 await sender.SendAsync(BuildPriorityAlert(), System.Threading.CancellationToken.None);
+                await sender.SendAsync(BuildHtmlSpecialChars(), System.Threading.CancellationToken.None);
+                await sender.SendAsync(BuildLowPriorityReminder(), System.Threading.CancellationToken.None);
 
-                System.Console.WriteLine("  sent 3 sample messages through the MailForge pipeline");
+                System.Console.WriteLine("  sent 5 sample messages through the MailForge pipeline");
+                System.Console.WriteLine("  (delete " + databasePath + " to reset the inbox)");
                 System.Console.WriteLine();
 
                 var inbox = await store.ListAsync(cancellationToken: System.Threading.CancellationToken.None);
@@ -127,6 +129,33 @@ namespace MailForge.Console
                 .Priority(EmailPriority.High)
                 .Header("X-Sev", "2")
                 .Tag("kind", "alert")
+                .Build();
+        }
+
+        private static EmailMessage BuildHtmlSpecialChars()
+        {
+            return EmailMessage.Create()
+                .From("news@mailforge.dev", "Acme News")
+                .To("carol@example.com", "Carol")
+                .Subject("Pricing update — A & B special characters")
+                .Html("<h1>A & B</h1><p title=\"Quoted & special\">Café © 2026 — 100% Acme &amp; Co</p><p>Check: 5 &lt; 10 &amp; 10 &gt; 5</p>")
+                .Text("Pricing update: A & B, Cafe 2026, 5 < 10 and 10 > 5.")
+                .Header("X-Marketing", "true")
+                .Tag("kind", "news")
+                .Build();
+        }
+
+        private static EmailMessage BuildLowPriorityReminder()
+        {
+            return EmailMessage.Create()
+                .From("billing@mailforge.dev", "Acme Billing")
+                .To("dave@example.com", "Dave")
+                .Subject("Subscription renews in 30 days")
+                .Html("<p>Your Pro plan renews on the 1st of next month.</p>")
+                .Text("Your Pro plan renews on the 1st of next month.")
+                .Priority(EmailPriority.Low)
+                .Header("X-Sev", "5")
+                .Tag("kind", "reminder")
                 .Build();
         }
 

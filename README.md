@@ -34,6 +34,7 @@ await emailSender.SendAsync(new WelcomeEmail(userModel));
 - [Failover](#failover)
 - [Live Testing](#live-testing)
 - [Studio Demo](#studio-demo)
+- [Studio Web Dashboard](#studio-web-dashboard)
 - [Repository Layout](#repository-layout)
 - [Supported Frameworks](#supported-frameworks)
 
@@ -88,7 +89,7 @@ MailForge is structured into four progressive layers that evolve without archite
 
 1. **Layer 1 — Core Framework** (`MailForge`): Provider-agnostic contracts plus the developer programming model: typed emails, pipeline, validation, middleware, template rendering, and multi-provider failover with precedence (.NET Standard 2.0 compatible).
 2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`, `MailForge.Postmark`, `MailForge.Mailgun`, `MailForge.Brevo`, `MailForge.AzureCS`, `MailForge.ZeptoMail`): Connectors handling authentication, external API communication, and delivery responses.
-3. **Layer 3 — Local Studio** (`MailForge.Studio`): In-repo project providing a local inbox backend in the `MailForge.Studio.Capture` namespace: a `StudioEmailProvider` that persists everything the pipeline sends to a SQLite local inbox, plus a lightweight SMTP relay that captures mail from any SMTP client.
+3. **Layer 3 — Local Studio** (`MailForge.Studio`): In-repo project providing a local inbox backend in the `MailForge.Studio.Capture` namespace: a `StudioEmailProvider` that persists everything the pipeline sends to a SQLite local inbox, a lightweight SMTP relay that captures mail from any SMTP client, and a `MailForge.Studio.Web` dashboard (FluentHtml + HTMX + Bootstrap 5) hosting an inbox UI and REST API via the `studio-web` console command.
 4. **Layer 4 — Gateway** (`MailForge.Server`): Self-hosted service exposing the failover engine over REST with an async delivery queue and normalized webhooks.
 
 ## Packages
@@ -389,6 +390,47 @@ dotnet run --project MailForge.Console -- studio-demo
 dotnet run --project MailForge.Console -- studio-demo 0
 ```
 
+## Studio Web Dashboard
+
+`studio-web` hosts the Studio web dashboard locally — a server-rendered inbox UI and REST API
+over the captured messages. It needs no credentials and is a single, self-contained command:
+the dashboard binds `http://127.0.0.1:<port>` **and** listens for SMTP on the relay port, so
+anything sent to the local relay appears in the inbox live (the list auto-refreshes every 5 s).
+
+```shell
+# One command: web UI on :5000 + SMTP capture relay on :2525, shared temp database
+dotnet run --project MailForge.Console -- studio-web
+
+# Custom port, database, and relay port (use "off" to disable the SMTP relay)
+dotnet run --project MailForge.Console -- studio-web 8080 ./mailforge-inbox.db 2526
+```
+
+The database defaults to `%TEMP%\mailforge-studio.db`, the same shared database `studio-demo`
+uses. The flow is:
+
+```shell
+# terminal 1 — the dashboard (keeps running)
+dotnet run --project MailForge.Console -- studio-web
+
+# terminal 2 — seed 3 samples into the same inbox (ephemeral relay, no port conflict)
+dotnet run --project MailForge.Console -- studio-demo 0
+```
+
+From there the inbox already shows the sample messages, and anything your app sends to
+`127.0.0.1:2525` (any SMTP client — MailKit, .NET SmtpClient, mailhog-style configs) is captured
+and appears live. Delete the database file to reset the inbox.
+
+The dashboard offers:
+
+- **Inbox** — search by subject/sender, priority filter, sort, pagination, and auto-refresh (HTMX)
+- **Detail panel** — tabs for Overview, HTML Preview, Plain Text, Raw MIME, Model JSON, Attachments, and Headers
+- **Replay** — re-send a captured message via SMTP (original recipients; a fresh Message-ID)
+- **Export** — download a message as `.eml`, HTML, or JSON
+- **REST API** — `GET /api/messages` (paged search), `GET /api/messages/{id}`, `GET /api/messages/{id}/export?format=eml|html|json`, `GET /api/messages/{id}/raw`, `GET /api/messages/{id}/attachments/{attachmentId}`, `POST /api/messages/{id}/replay`
+
+Pages and components are built with fluent HTML helpers (FluentHtml) — there are no Razor views
+or `wwwroot` assets in the Studio project.
+
 ## Repository Layout
 
 ```
@@ -401,9 +443,9 @@ MailForge.Mailgun/      Layer 2 Mailgun provider
 MailForge.Brevo/        Layer 2 Brevo provider
 MailForge.AzureCS/      Layer 2 Azure Communication Services provider
 MailForge.ZeptoMail/    Layer 2 ZeptoMail provider
-MailForge.Studio/       Layer 3 local Studio (Capture/ folder: SQLite store + SMTP relay)
+MailForge.Studio/       Layer 3 local Studio (Capture/ SQLite store + SMTP relay; Web/ FluentHtml dashboard + REST API)
 MailForge.Tests/        xUnit test suite
-MailForge.Console/      Sample console application (live tests + studio-demo)
+MailForge.Console/      Sample console application (live tests + studio-demo + studio-web)
 ```
 
 ## Supported Frameworks

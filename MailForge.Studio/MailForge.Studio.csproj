@@ -10,12 +10,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MailForge\MailForge.csproj" />
+    <ProjectReference Include="..\MailForge.Smtp\MailForge.Smtp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.10" />
+    <PackageReference Include="FluentHtml.Core" Version="0.5.0" />
+    <PackageReference Include="FluentHtml.Http" Version="0.5.0" />
+    <PackageReference Include="FluentHtml.Htmx" Version="0.5.0" />
+    <PackageReference Include="FluentHtml.Bootstrap" Version="0.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +27,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

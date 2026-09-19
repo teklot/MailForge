@@ -15,14 +15,15 @@ internal static class ConsoleMenu
             System.Console.WriteLine();
             System.Console.WriteLine("  1. Run the demo walkthrough");
             System.Console.WriteLine("  2. Studio — local capture demo");
-            System.Console.WriteLine("  3. Live test — SMTP");
-            System.Console.WriteLine("  4. Live test — Resend");
-            System.Console.WriteLine("  5. Live test — Amazon SES");
-            System.Console.WriteLine("  6. Live test — Postmark");
-            System.Console.WriteLine("  7. Live test — Mailgun");
-            System.Console.WriteLine("  8. Live test — Brevo");
-            System.Console.WriteLine("  9. Live test — ZeptoMail");
-            System.Console.WriteLine(" 10. Live test — Azure Communication Services");
+            System.Console.WriteLine("  3. Studio — web dashboard (+ SMTP relay on 2525)");
+            System.Console.WriteLine("  4. Live test — SMTP");
+            System.Console.WriteLine("  5. Live test — Resend");
+            System.Console.WriteLine("  6. Live test — Amazon SES");
+            System.Console.WriteLine("  7. Live test — Postmark");
+            System.Console.WriteLine("  8. Live test — Mailgun");
+            System.Console.WriteLine("  9. Live test — Brevo");
+            System.Console.WriteLine(" 10. Live test — ZeptoMail");
+            System.Console.WriteLine(" 11. Live test — Azure Communication Services");
             System.Console.WriteLine("  0. Exit");
             System.Console.WriteLine();
             System.Console.Write("Choose an option: ");
@@ -41,7 +42,7 @@ internal static class ConsoleMenu
             if (choice == 0)
                 return;
 
-            if (choice is >= 1 and <= 10)
+            if (choice is >= 1 and <= 11)
             {
                 await RunMenuChoice(choice);
                 System.Console.WriteLine();
@@ -67,27 +68,30 @@ internal static class ConsoleMenu
                 await StudioDemo.RunAsync(new[] { StudioDemo.Command, "0" });
                 break;
             case 3:
-                await LiveTests.SmtpAsync(new[] { LiveTests.Commands[0] });
+                await StudioWebCommand.RunAsync(new[] { StudioWebCommand.Command });
                 break;
             case 4:
-                await LiveTests.ResendAsync(new[] { LiveTests.Commands[1] });
+                await LiveTests.SmtpAsync(new[] { LiveTests.Commands[0] });
                 break;
             case 5:
-                await LiveTests.AmazonSesAsync(new[] { LiveTests.Commands[2] });
+                await LiveTests.ResendAsync(new[] { LiveTests.Commands[1] });
                 break;
             case 6:
-                await LiveTests.PostmarkAsync(new[] { LiveTests.Commands[3] });
+                await LiveTests.AmazonSesAsync(new[] { LiveTests.Commands[2] });
                 break;
             case 7:
-                await LiveTests.MailgunAsync(new[] { LiveTests.Commands[4] });
+                await LiveTests.PostmarkAsync(new[] { LiveTests.Commands[3] });
                 break;
             case 8:
-                await LiveTests.BrevoAsync(new[] { LiveTests.Commands[5] });
+                await LiveTests.MailgunAsync(new[] { LiveTests.Commands[4] });
                 break;
             case 9:
-                await LiveTests.ZeptoMailAsync(new[] { LiveTests.Commands[6] });
+                await LiveTests.BrevoAsync(new[] { LiveTests.Commands[5] });
                 break;
             case 10:
+                await LiveTests.ZeptoMailAsync(new[] { LiveTests.Commands[6] });
+                break;
+            case 11:
                 await LiveTests.AzureCSAsync(new[] { LiveTests.Commands[7] });
                 break;
         }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using MailForge.Builders;
 using MailForge.Models;
+using MailForge.Studio.Capture.Entities;
 using MimeKit;
 
 namespace MailForge.Studio.Capture
@@ -90,6 +91,99 @@ namespace MailForge.Studio.Capture
             using var stream = new MemoryStream();
             mime.WriteTo(stream);
             return stream.ToArray();
+        }
+
+        /// <summary>
+        /// Reconstructs a <see cref="MimeMessage"/> from a stored <see cref="CapturedMessage"/>.
+        /// When <see cref="CapturedMessage.RawMime"/> is present it is used directly;
+        /// otherwise the message is rebuilt from the stored fields and attachments.
+        /// </summary>
+        public static MimeMessage? ToMimeMessage(CapturedMessage message)
+        {
+            if (message is null)
+                throw new ArgumentNullException(nameof(message));
+
+            if (message.RawMime is { Length: > 0 })
+            {
+                try
+                {
+                    using var stream = new MemoryStream(message.RawMime);
+                    return MimeMessage.Load(stream);
+                }
+                catch
+                {
+                    // fall through to reconstruction
+                }
+            }
+
+            var mime = new MimeMessage();
+
+            if (!string.IsNullOrWhiteSpace(message.From))
+                mime.From.Add(MailboxAddress.Parse(message.From));
+            else if (!string.IsNullOrWhiteSpace(message.EnvelopeFrom))
+                mime.From.Add(MailboxAddress.Parse(message.EnvelopeFrom));
+
+            foreach (var recipient in message.Recipients)
+            {
+                if (string.IsNullOrWhiteSpace(recipient.Address))
+                    continue;
+                var address = MailboxAddress.Parse(recipient.Address);
+                switch (recipient.Type)
+                {
+                    case EmailRecipientType.To: mime.To.Add(address); break;
+                    case EmailRecipientType.Cc: mime.Cc.Add(address); break;
+                    case EmailRecipientType.Bcc: mime.Bcc.Add(address); break;
+                }
+            }
+
+            mime.MessageId = message.MessageId;
+            mime.Subject = message.Subject ?? string.Empty;
+            mime.Priority = message.Priority switch
+            {
+                EmailPriority.High => MessagePriority.Urgent,
+                EmailPriority.Low => MessagePriority.NonUrgent,
+                _ => MessagePriority.Normal,
+            };
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = message.HtmlBody,
+                TextBody = message.TextBody,
+            };
+
+            foreach (var attachment in message.Attachments)
+            {
+                var ct = new ContentType("application", "octet-stream");
+                if (!string.IsNullOrWhiteSpace(attachment.MediaType))
+                    ct = ContentType.Parse(attachment.MediaType);
+
+                var part = bodyBuilder.Attachments.Add(
+                    attachment.FileName ?? "attachment",
+                    attachment.Content,
+                    ct);
+
+                if (attachment.IsInline)
+                {
+                    part.IsAttachment = false;
+                    if (!string.IsNullOrWhiteSpace(attachment.ContentId))
+                    {
+                        part.ContentId = attachment.ContentId;
+                        part.ContentDisposition = new ContentDisposition(ContentDisposition.Inline);
+                    }
+                }
+            }
+
+            mime.Body = bodyBuilder.ToMessageBody();
+
+            foreach (var header in message.Headers)
+            {
+                if (string.IsNullOrWhiteSpace(header.Name) || header.Value is null)
+                    continue;
+                try { mime.Headers.Add(header.Name, header.Value); }
+                catch { }
+            }
+
+            return mime;
         }
 
         private static IEnumerable<MimePart> EnumerateParts(MimeEntity? entity)

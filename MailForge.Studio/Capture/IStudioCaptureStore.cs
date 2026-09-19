@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailForge.Models;
 using MailForge.Studio.Capture.Entities;
+using MailForge.Studio.Web;
 
 namespace MailForge.Studio.Capture
 {
@@ -28,5 +29,14 @@ namespace MailForge.Studio.Capture
             int skip = 0,
             int take = 50,
             CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Queries captured messages applying search, priority filter, sorting, and paging,
+        /// including their recipients.
+        /// </summary>
+        Task<StudioMessagePage> QueryAsync(StudioMessageQuery query, CancellationToken cancellationToken = default);
+
+        /// <summary>Returns a captured attachment by id, or null.</summary>
+        Task<CapturedAttachment?> GetAttachmentAsync(Guid attachmentId, CancellationToken cancellationToken = default);
     }
 }

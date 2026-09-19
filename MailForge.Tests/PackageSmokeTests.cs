@@ -43,7 +43,7 @@ namespace MailForge.Tests
         {
             var version = markerType.Assembly.GetName().Version;
             Assert.NotNull(version);
-            Assert.StartsWith("0.5.0.", version.ToString());
+            Assert.StartsWith("0.6.0.", version.ToString());
         }
 
         [Fact]

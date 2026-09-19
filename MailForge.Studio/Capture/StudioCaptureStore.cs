@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailForge.Models;
 using MailForge.Studio.Capture.Entities;
+using MailForge.Studio.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace MailForge.Studio.Capture
@@ -79,6 +80,72 @@ namespace MailForge.Studio.Capture
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<StudioMessagePage> QueryAsync(
+            StudioMessageQuery query,
+            CancellationToken cancellationToken = default)
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+
+            var page = Math.Max(1, query.Page ?? 1);
+            var pageSize = Math.Max(1, query.PageSize ?? 25);
+
+            await EnsureSchemaAsync(cancellationToken);
+            await using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+
+            IQueryable<CapturedMessage> filtered = context.Messages.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                filtered = filtered.Where(m =>
+                    (m.Subject != null && m.Subject.ToLower().Contains(search)) ||
+                    (m.From != null && m.From.ToLower().Contains(search)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Priority) &&
+                !string.Equals(query.Priority, "All", StringComparison.OrdinalIgnoreCase) &&
+                Enum.TryParse<EmailPriority>(query.Priority, ignoreCase: true, out var priority))
+            {
+                filtered = filtered.Where(m => m.Priority == priority);
+            }
+
+            var totalCount = await filtered.CountAsync(cancellationToken);
+
+            IQueryable<CapturedMessage> sorted = filtered.OrderByDescending(m => m.CreatedAt);
+            if (string.Equals(query.Sort, "From", StringComparison.OrdinalIgnoreCase))
+                sorted = filtered.OrderBy(m => m.From ?? "");
+            else if (string.Equals(query.Sort, "Subject", StringComparison.OrdinalIgnoreCase))
+                sorted = filtered.OrderBy(m => m.Subject ?? "");
+
+            var items = await sorted
+                .Include(m => m.Recipients)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return new StudioMessagePage
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+            };
+        }
+
+        /// <inheritdoc />
+        public async Task<CapturedAttachment?> GetAttachmentAsync(
+            Guid attachmentId,
+            CancellationToken cancellationToken = default)
+        {
+            await EnsureSchemaAsync(cancellationToken);
+            await using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+            return await context.Attachments
+                .AsNoTracking()
+                .SingleOrDefaultAsync(a => a.Id == attachmentId, cancellationToken);
         }
 
         private async Task EnsureSchemaAsync(CancellationToken cancellationToken)
