@@ -5,6 +5,9 @@ namespace MailForge.Postmark
     /// <summary>Configuration for the Postmark provider.</summary>
     public sealed class PostmarkOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="PostmarkOptions"/> class.</summary>
+        public PostmarkOptions() { }
+
         /// <summary>The Postmark server token.</summary>
         public string? ServerToken { get; set; }
 

@@ -7,6 +7,9 @@ namespace MailForge.Builders
     /// <summary>Fluent builder used to construct an <see cref="EmailMessage"/>.</summary>
     public sealed class EmailMessageBuilder
     {
+        /// <summary>Initializes a new instance of the <see cref="EmailMessageBuilder"/> class.</summary>
+        public EmailMessageBuilder() { }
+
         private EmailAddress? _from;
         private string? _subject;
         private string? _htmlBody;

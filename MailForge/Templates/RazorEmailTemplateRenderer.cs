@@ -13,6 +13,8 @@ namespace MailForge.Templates
     /// </summary>
     public sealed class RazorEmailTemplateRenderer : IEmailTemplateRenderer
     {
+        /// <summary>Initializes a new instance of the <see cref="RazorEmailTemplateRenderer"/> class.</summary>
+        public RazorEmailTemplateRenderer() { }
         private readonly RazorEngine _engine = new RazorEngine();
         private readonly ConcurrentDictionary<string, IRazorEngineCompiledTemplate> _cache =
             new ConcurrentDictionary<string, IRazorEngineCompiledTemplate>();

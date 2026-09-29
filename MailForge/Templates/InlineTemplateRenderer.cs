@@ -15,6 +15,8 @@ namespace MailForge.Templates
     /// </summary>
     public sealed class InlineTemplateRenderer : IInlineTemplateRenderer
     {
+        /// <summary>Initializes a new instance of the <see cref="InlineTemplateRenderer"/> class.</summary>
+        public InlineTemplateRenderer() { }
         private static readonly Regex Placeholder = new Regex(@"\{\{([A-Za-z_][A-Za-z0-9_.\[\]]*)\}\}", RegexOptions.Compiled);
 
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache =

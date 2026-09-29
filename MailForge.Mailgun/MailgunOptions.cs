@@ -5,6 +5,9 @@ namespace MailForge.Mailgun
     /// <summary>Configuration for the Mailgun provider.</summary>
     public sealed class MailgunOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="MailgunOptions"/> class.</summary>
+        public MailgunOptions() { }
+
         /// <summary>The Mailgun API key.</summary>
         public string? ApiKey { get; set; }
 

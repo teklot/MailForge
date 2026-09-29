@@ -5,6 +5,9 @@ namespace MailForge.ZeptoMail
     /// <summary>Configuration for the ZeptoMail (Zoho) provider.</summary>
     public sealed class ZeptoMailOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="ZeptoMailOptions"/> class.</summary>
+        public ZeptoMailOptions() { }
+
         /// <summary>The Zoho ZeptoMail API key.</summary>
         public string? SendApiKey { get; set; }
 

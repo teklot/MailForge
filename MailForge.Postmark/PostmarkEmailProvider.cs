@@ -29,18 +29,17 @@ namespace MailForge.Postmark
 
         /// <summary>Creates the provider from Postmark options.</summary>
         public PostmarkEmailProvider(PostmarkOptions options)
+            : this(options, CreateHttpClient(options ?? throw new ArgumentNullException(nameof(options))))
+        {
+        }
+
+        /// <summary>Creates the provider using a pre-configured HttpClient (primarily for testing).</summary>
+        internal PostmarkEmailProvider(PostmarkOptions options, HttpClient httpClient)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             if (string.IsNullOrWhiteSpace(_options.ServerToken))
                 throw new ArgumentException("A Postmark server token is required.", nameof(options));
-            _httpClient = CreateHttpClient(_options);
-        }
-
-        /// <summary>Creates the provider using a pre-configured HttpClient (primarily for testing).</summary>
-        public PostmarkEmailProvider(PostmarkOptions options, HttpClient httpClient)
-            : this(options)
-        {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         /// <summary>The provider display name.</summary>

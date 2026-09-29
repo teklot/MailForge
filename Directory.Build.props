@@ -4,12 +4,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>0.6.0</Version>
+    <Version>1.0.0</Version>
     <Authors>TekLot</Authors>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' != 'false'">
     <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="" />
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <InternalsVisibleTo Include="MailForge.Tests" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,8 @@ namespace MailForge.Tests
 {
     public class PackageSmokeTests
     {
+        // Must match <Version> in Directory.Build.props.
+        private const string ExpectedVersion = "1.0.0";
         [Theory]
         [InlineData(typeof(EmailMessage), "MailForge")]
         [InlineData(typeof(SmtpEmailProvider), "MailForge.Smtp")]
@@ -43,7 +45,31 @@ namespace MailForge.Tests
         {
             var version = markerType.Assembly.GetName().Version;
             Assert.NotNull(version);
-            Assert.StartsWith("0.6.0.", version.ToString());
+            Assert.StartsWith(ExpectedVersion + ".", version.ToString());
+        }
+
+        [Fact]
+        public void LibraryAssemblies_ShareOneVersion()
+        {
+            var assemblies = new[]
+            {
+                Assembly.GetAssembly(typeof(EmailMessage)),
+                Assembly.GetAssembly(typeof(EmailSender)),
+                Assembly.GetAssembly(typeof(SmtpEmailProvider)),
+                Assembly.GetAssembly(typeof(ResendEmailProvider)),
+                Assembly.GetAssembly(typeof(AmazonSesEmailProvider)),
+                Assembly.GetAssembly(typeof(PostmarkEmailProvider)),
+                Assembly.GetAssembly(typeof(BrevoEmailProvider)),
+                Assembly.GetAssembly(typeof(ZeptoMailEmailProvider)),
+                Assembly.GetAssembly(typeof(MailgunEmailProvider)),
+                Assembly.GetAssembly(typeof(AzureCSEmailProvider)),
+            };
+
+            Assert.All(assemblies, a => Assert.NotNull(a));
+
+            var versionStrings = assemblies.Select(a => a!.GetName().Version!.ToString()).ToArray();
+            Assert.All(versionStrings, v => Assert.StartsWith(ExpectedVersion + ".", v));
+            Assert.Single(versionStrings.Distinct());
         }
 
         [Fact]

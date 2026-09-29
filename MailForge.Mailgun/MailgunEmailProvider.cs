@@ -24,20 +24,19 @@ namespace MailForge.Mailgun
 
         /// <summary>Creates the provider from Mailgun options.</summary>
         public MailgunEmailProvider(MailgunOptions options)
+            : this(options, CreateHttpClient(options ?? throw new ArgumentNullException(nameof(options))))
+        {
+        }
+
+        /// <summary>Creates the provider using a pre-configured HttpClient (primarily for testing).</summary>
+        internal MailgunEmailProvider(MailgunOptions options, HttpClient httpClient)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             if (string.IsNullOrWhiteSpace(_options.ApiKey))
                 throw new ArgumentException("A Mailgun API key is required.", nameof(options));
             if (string.IsNullOrWhiteSpace(_options.Domain))
                 throw new ArgumentException("A Mailgun domain is required.", nameof(options));
-            _httpClient = CreateHttpClient(_options);
-        }
-
-        /// <summary>Creates the provider using a pre-configured HttpClient (primarily for testing).</summary>
-        public MailgunEmailProvider(MailgunOptions options, HttpClient httpClient)
-            : this(options)
-        {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         /// <summary>The provider display name.</summary>

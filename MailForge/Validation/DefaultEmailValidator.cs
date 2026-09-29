@@ -15,6 +15,8 @@ namespace MailForge.Validation
     /// </summary>
     public sealed class DefaultEmailValidator : IEmailValidator
     {
+        /// <summary>Initializes a new instance of the <see cref="DefaultEmailValidator"/> class.</summary>
+        public DefaultEmailValidator() { }
         private static readonly Regex AddressPattern = new Regex(
             @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);

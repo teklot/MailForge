@@ -5,6 +5,8 @@ namespace MailForge.Templates
     /// <summary>Default in-memory <see cref="ITemplateRegistry"/> implementation.</summary>
     public sealed class TemplateRegistry : ITemplateRegistry
     {
+        /// <summary>Initializes a new instance of the <see cref="TemplateRegistry"/> class.</summary>
+        public TemplateRegistry() { }
         private readonly Dictionary<string, string> _templates = new Dictionary<string, string>();
 
         /// <summary>Registers a named template, replacing any existing template with the same name.</summary>

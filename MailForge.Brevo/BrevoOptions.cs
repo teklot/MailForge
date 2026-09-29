@@ -5,6 +5,9 @@ namespace MailForge.Brevo
     /// <summary>Configuration for the Brevo provider.</summary>
     public sealed class BrevoOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="BrevoOptions"/> class.</summary>
+        public BrevoOptions() { }
+
         /// <summary>The Brevo API key.</summary>
         public string? ApiKey { get; set; }
 

@@ -7,8 +7,8 @@ using MimeKit;
 namespace MailForge.Shared
 {
     /// <summary>
-    /// Shared MIME message mapping used by providers that need MimeKit integration.
-    /// Compiled into each provider assembly via shared source file reference.
+    /// Shared MIME message mapping provided by the MailForge core package. Used by the SMTP and
+    /// Amazon SES providers, and available for integrations that need MimeKit interoperability.
     /// </summary>
     public static class MimeMessageMapper
     {

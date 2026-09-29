@@ -3,6 +3,9 @@ namespace MailForge.AmazonSES
     /// <summary>Configuration for the Amazon SES provider.</summary>
     public sealed class AmazonSesOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="AmazonSesOptions"/> class.</summary>
+        public AmazonSesOptions() { }
+
         /// <summary>
         /// The AWS region name (for example, "us-east-1"). Required unless the SDK is configured
         /// with a default region through the environment or a profile.

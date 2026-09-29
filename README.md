@@ -4,8 +4,9 @@
 [![NuGet Version](https://img.shields.io/nuget/v/MailForge)](https://www.nuget.org/packages/MailForge)
 [![.NET](https://img.shields.io/badge/.NET-net10.0%20%7C%20netstandard2.0-blue)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Docs](https://img.shields.io/badge/docs-FluentHtml-blueviolet)](https://teklot.github.io/MailForge/)
 
-MailForge is a unified, layered transactional communication ecosystem for .NET applications. It bridges the gap between lightweight email libraries and large third-party email providers by offering a provider-agnostic framework, a local developer studio, and a self-hosted gateway server.
+MailForge is a unified, layered transactional communication ecosystem for .NET applications. It bridges the gap between lightweight email libraries and large third-party email providers by offering a provider-agnostic framework and a local developer studio.
 
 The developer experience goal: a strongly typed, production-ready transactional email after installing a single package with minimal configuration.
 
@@ -19,6 +20,7 @@ await emailSender.SendAsync(new WelcomeEmail(userModel));
 
 - [Why MailForge?](#why-mailforge)
 - [How It Works](#how-it-works)
+- [Documentation](#documentation)
 - [Packages](#packages)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -61,7 +63,7 @@ without tying your business logic to any single service.
 
 ## How It Works
 
-MailForge is structured into four progressive layers that evolve without architectural rewrites:
+MailForge is structured into three progressive layers that evolve without architectural rewrites:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -72,25 +74,31 @@ MailForge is structured into four progressive layers that evolve without archite
 │              Layer 1: MailForge Framework               │
 │                 MailForge (core)                        │
 └────────────────────────────┬────────────────────────────┘
-                             │
-       ┌─────────────────────┼─────────────────────┐
-       ▼                     ▼                     ▼
-┌───────────────┐     ┌───────────────┐     ┌───────────────┐
-│    Layer 2    │     │    Layer 3    │     │    Layer 4    │
-│   Providers   │     │ MailForge     │     │ MailForge     │
-│ SMTP · Resend │     │ Studio        │     │ Gateway       │
-│   · AmazonSES │     │ (Local Dev)   │     │ REST API &    │
-│               │     │               │     │ Failover Queue│
-└───────┬───────┘     └───────────────┘     └───────┬───────┘
-        │                                           │
-        ▼                                           ▼
-    Internet                                  Delivery Queue
+                             ▼
+┌─────────────────────────────────────────────────────────┐
+│        Layer 2: Provider SDK · MailForge Studio         │
+│           (Local Dev · Providers Wiring · Relay)        │
+└────────────────────────────┬────────────────────────────┘
+                             ▼
+                          Internet
 ```
 
 1. **Layer 1 — Core Framework** (`MailForge`): Provider-agnostic contracts plus the developer programming model: typed emails, pipeline, validation, middleware, template rendering, and multi-provider failover with precedence (.NET Standard 2.0 compatible).
 2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`, `MailForge.Postmark`, `MailForge.Mailgun`, `MailForge.Brevo`, `MailForge.AzureCS`, `MailForge.ZeptoMail`): Connectors handling authentication, external API communication, and delivery responses.
 3. **Layer 3 — Local Studio** (`MailForge.Studio`): In-repo project providing a local inbox backend in the `MailForge.Studio.Capture` namespace: a `StudioEmailProvider` that persists everything the pipeline sends to a SQLite local inbox, a lightweight SMTP relay that captures mail from any SMTP client, and a `MailForge.Studio.Web` dashboard (FluentHtml + HTMX + Bootstrap 5) hosting an inbox UI and REST API via the `studio-web` console command.
-4. **Layer 4 — Gateway** (`MailForge.Server`): Self-hosted service exposing the failover engine over REST with an async delivery queue and normalized webhooks.
+
+## Documentation
+
+The full documentation site is at [teklot.github.io/MailForge](https://teklot.github.io/MailForge) —
+sources live in `docs/` and are generated with DocFX on every push to `main`.
+
+- [Getting Started](docs/getting-started.md) — install, configure, and send your first email
+- [Architecture](docs/architecture.md) — the three layers, delivery pipeline, and failover mechanics
+- [Providers](docs/concepts/providers.md) — provider options, auth, and capability matrix
+- [Testing](docs/concepts/testing.md) — `FakeEmailProvider` and hermetic provider tests
+- [API Reference](docs/api/index.md) — generated from XML doc comments
+- [Migration](docs/migration.md) — upgrading from pre-1.0 releases
+- [Provider Verification](docs/provider-verification.md) — live provider matrix and the v1.0 release gate
 
 ## Packages
 
@@ -446,6 +454,7 @@ MailForge.ZeptoMail/    Layer 2 ZeptoMail provider
 MailForge.Studio/       Layer 3 local Studio (Capture/ SQLite store + SMTP relay; Web/ FluentHtml dashboard + REST API)
 MailForge.Tests/        xUnit test suite
 MailForge.Console/      Sample console application (live tests + studio-demo + studio-web)
+docs/                   DocFX documentation site (sources + generated API reference)
 ```
 
 ## Supported Frameworks

@@ -7,7 +7,7 @@ namespace MailForge.Utilities
     /// Converts an HTML body into a readable plain-text version by inserting line breaks at block
     /// boundaries, stripping tags, and decoding HTML entities.
     /// </summary>
-    public static class PlainTextGenerator
+    internal static class PlainTextGenerator
     {
         private static readonly Regex ScriptStyleTitleBlocks = new Regex(
             @"(?i)<\s*(script|style|title)\b[^>]*>.*?</\s*\1\s*>",

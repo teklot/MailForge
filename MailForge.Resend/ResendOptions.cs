@@ -5,6 +5,9 @@ namespace MailForge.Resend
     /// <summary>Configuration for the Resend provider.</summary>
     public sealed class ResendOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="ResendOptions"/> class.</summary>
+        public ResendOptions() { }
+
         /// <summary>The Resend API key.</summary>
         public string? ApiKey { get; set; }
 

@@ -28,18 +28,17 @@ namespace MailForge.ZeptoMail
 
         /// <summary>Creates the provider from ZeptoMail options.</summary>
         public ZeptoMailEmailProvider(ZeptoMailOptions options)
+            : this(options, CreateHttpClient(options ?? throw new ArgumentNullException(nameof(options))))
+        {
+        }
+
+        /// <summary>Creates the provider using a pre-configured HttpClient (primarily for testing).</summary>
+        internal ZeptoMailEmailProvider(ZeptoMailOptions options, HttpClient httpClient)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             if (string.IsNullOrWhiteSpace(_options.SendApiKey))
                 throw new ArgumentException("A ZeptoMail API key is required.", nameof(options));
-            _httpClient = CreateHttpClient(_options);
-        }
-
-        /// <summary>Creates the provider using a pre-configured HttpClient (primarily for testing).</summary>
-        public ZeptoMailEmailProvider(ZeptoMailOptions options, HttpClient httpClient)
-            : this(options)
-        {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         /// <summary>The provider display name.</summary>

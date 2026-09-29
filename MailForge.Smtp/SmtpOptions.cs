@@ -5,6 +5,9 @@ namespace MailForge.Smtp
     /// <summary>Configuration for the SMTP provider.</summary>
     public sealed class SmtpOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="SmtpOptions"/> class.</summary>
+        public SmtpOptions() { }
+
         /// <summary>The SMTP server host name or IP address.</summary>
         public string? Host { get; set; }
 

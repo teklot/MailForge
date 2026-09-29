@@ -5,6 +5,9 @@ namespace MailForge.AzureCS
     /// <summary>Configuration for the Azure Communication Services email provider.</summary>
     public sealed class AzureCSOptions
     {
+        /// <summary>Initializes a new instance of the <see cref="AzureCSOptions"/> class.</summary>
+        public AzureCSOptions() { }
+
         /// <summary>
         /// The Azure Communication Services resource endpoint
         /// (for example, "https://my-resource.communication.azure.com").

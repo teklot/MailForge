@@ -10,7 +10,7 @@ namespace MailForge.AmazonSES
     /// Converts a MailForge <see cref="EmailMessage"/> into a MIME message and serializes it to
     /// the byte stream required by the Amazon SES raw-message API.
     /// </summary>
-    public static class SesMessageMapper
+    internal static class SesMessageMapper
     {
         /// <summary>Builds a MIME message from a MailForge message.</summary>
         public static MimeMessage ToMimeMessage(EmailMessage message) =>

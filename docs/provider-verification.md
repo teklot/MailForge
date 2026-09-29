@@ -1,0 +1,71 @@
+# Provider Verification
+
+Live, real-network checks are an explicit release gate for v1.0. Each `live-*` command in
+the console app sends a real message through a provider and prints `Succeeded`, the
+provider message id, and details.
+
+## The Commands
+
+Run any command from the repository root:
+
+```bash
+dotnet run --project MailForge.Console -- <command> [args]
+```
+
+| Provider | Command | Arguments | Env vars (fallback) |
+|----------|---------|-----------|-----------------------|
+| SMTP | `live-smtp` | `[host] [port] [to]` | — |
+| Resend | `live-resend` | `[apiKey] [to]` | `RESEND_API_KEY` |
+| Amazon SES | `live-ses` | `[region] [to]` | `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
+| Postmark | `live-postmark` | `[serverToken] [to]` | `POSTMARK_SERVER_TOKEN` |
+| Mailgun | `live-mailgun` | `[apiKey] [domain] [to]` | `MAILGUN_API_KEY`, `MAILGUN_DOMAIN` |
+| Brevo | `live-brevo` | `[apiKey] [to]` | `BREVO_API_KEY` |
+| ZeptoMail | `live-zeptomail` | `[sendApiKey] [to]` | `ZEPTOMAIL_SEND_API_KEY` |
+| Azure CS | `live-azurecs` | `[endpoint] [accessKey] [sender] [to]` | `AZURE_COMMUNICATION_ENDPOINT`, `AZURE_COMMUNICATION_ACCESS_KEY`, `AZURE_COMMUNICATION_SENDER` |
+
+**Recipient / sender defaults:** `LIVE_TO` picks the recipient for every command (default
+`recipient@example.com`); `LIVE_FROM` picks the sender (default `sender@example.com`). For
+production-like runs set both env vars — addresses are the only per-run variable.
+
+Every test message carries: subject, HTML + text bodies, one tag (`purpose=live-test`),
+and one text attachment (`note.txt`).
+
+### Local SMTP (offline)
+
+For the SMTP command without a real server, use [smtp4dev](https://github.com/rnwood/smtp4dev):
+
+```bash
+dotnet run --project MailForge.Console -- live-smtp 127.0.0.1 25 you@example.com
+```
+
+Expect `Succeeded: True` and a message id. SMTP has no provider-level validation; confirm
+delivery by inspecting the smtp4dev web UI.
+
+## Release Verification
+
+Live, network-level checks are a v1.0 release gate. Every HTTP provider is already
+covered by automated integration tests against a local mock server (full suite green,
+174 tests), and the `live-*` commands above add a real network send against a live
+account. Results are captured per release and published in the release notes rather than
+surfaced as in-progress status here.
+
+## Known Provider Notes
+
+- **SMTP:** validation is deferred to the server; a rejected recipient reports a delivery
+  failure, not a validation error.
+- **ZeptoMail / Azure CS:** headers and tags are dropped by the provider (see
+  [Provider Capabilities](concepts/capabilities.md)).
+- **Resend:** inline images are not supported; mark capabilities accordingly.
+- **Azure CS:** the sender must be verified for the resource, and the access key is
+  Base64-decoded before HMAC signing.
+- **SES:** credentials fall back to the standard AWS credential chain when keys are absent.
+
+## Release Checklist
+
+1. Full CI green on ubuntu-latest and windows-latest (Debug locally; Release in CI only).
+2. `dotnet pack` builds all nine packages; inspect each nupkg for README, LICENSE.
+3. `docfx metadata` + `docfx build` succeed with zero warnings; generated API reflects the
+   frozen surface (no internal members).
+4. All `live-*` commands return `Succeeded` against real accounts for the target release
+   candidates; results published in the release notes.
+5. Tag `v1.0.0` — the publish workflow pushes packages and the docs site deploys on `main`.

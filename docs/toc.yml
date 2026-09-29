@@ -1,0 +1,31 @@
+- name: Home
+  href: index.md
+- name: API Reference
+  href: api/
+- name: Documentation
+  items:
+    - name: Getting Started
+      href: getting-started.md
+    - name: Architecture
+      href: architecture.md
+    - name: Concepts
+      href: concepts/index.md
+      items:
+        - name: Core
+          href: concepts/core.md
+        - name: Templates
+          href: concepts/templates.md
+        - name: Failover
+          href: concepts/failover.md
+        - name: Providers
+          href: concepts/providers.md
+        - name: Studio
+          href: concepts/studio.md
+        - name: Testing
+          href: concepts/testing.md
+        - name: Provider Capabilities
+          href: concepts/capabilities.md
+    - name: Migration
+      href: migration.md
+    - name: Provider Verification
+      href: provider-verification.md

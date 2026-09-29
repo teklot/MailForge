@@ -1,0 +1,67 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "MailForge/MailForge.csproj",
+            "MailForge.Smtp/MailForge.Smtp.csproj",
+            "MailForge.Resend/MailForge.Resend.csproj",
+            "MailForge.AmazonSES/MailForge.AmazonSES.csproj",
+            "MailForge.Postmark/MailForge.Postmark.csproj",
+            "MailForge.Mailgun/MailForge.Mailgun.csproj",
+            "MailForge.Brevo/MailForge.Brevo.csproj",
+            "MailForge.ZeptoMail/MailForge.ZeptoMail.csproj",
+            "MailForge.AzureCS/MailForge.AzureCS.csproj"
+          ],
+          "src": ".."
+        }
+      ],
+      "dest": "api",
+      "includePrivateMembers": false,
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false,
+      "noRestore": false,
+      "namespaceLayout": "flattened",
+      "memberLayout": "samePage",
+      "properties": {
+        "TargetFramework": "net10.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": ["api/**.yml", "api/**.toc.yml"]
+      },
+      {
+        "files": ["**.md", "**/toc.yml", "toc.yml"]
+      }
+    ],
+    "resource": [
+      {
+        "files": ["images/**", "favicon.ico"]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": ["default", "modern"],
+    "globalMetadata": {
+      "_appTitle": "MailForge",
+      "_appName": "MailForge",
+      "_appLogoPath": "images/logo.svg",
+      "_appFooter": "2026 TekLot. Apache 2.0 License.",
+      "_enableSearch": true,
+      "_enableNewTab": true,
+      "_gitContribute": {
+        "repo": "https://github.com/teklot/MailForge",
+        "branch": "main"
+      }
+    },
+    "fileMetadata": {},
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false
+  }
+}

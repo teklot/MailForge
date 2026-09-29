@@ -14,6 +14,8 @@ namespace MailForge.Builders
     /// </summary>
     public sealed class MailForgeBuilder
     {
+        /// <summary>Initializes a new instance of the <see cref="MailForgeBuilder"/> class.</summary>
+        public MailForgeBuilder() { }
         internal IEmailProvider? Provider { get; private set; }
         internal Func<IServiceProvider, IEmailProvider>? ProviderFactory { get; private set; }
         internal EmailAddress? DefaultFrom { get; private set; }

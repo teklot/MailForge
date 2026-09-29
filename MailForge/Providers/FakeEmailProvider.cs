@@ -12,6 +12,8 @@ namespace MailForge.Providers
     /// </summary>
     public sealed class FakeEmailProvider : IEmailProvider
     {
+        /// <summary>Initializes a new instance of the <see cref="FakeEmailProvider"/> class.</summary>
+        public FakeEmailProvider() { }
         private readonly List<EmailMessage> _sent = new List<EmailMessage>();
 
         /// <summary>The provider display name.</summary>
