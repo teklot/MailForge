@@ -29,9 +29,9 @@ images as `data:` URIs because it has no `cid:` mechanism.
 | Postmark | ✓ | ✓ | ✓ | ✓ |
 | Mailgun | ✓ | ✓ | ✓ | ✓ |
 | Brevo | ✓ | ✓ | ✓ | ✓ |
-| Resend | ✓ | ✗ | ✓ | ✓ |
-| ZeptoMail | ✓ | ✓ | ✗ | ✗ |
-| Azure Communication Services | ✓ | ✓¹ | ✓ | ✗ |
+| Resend | ✓ | ❌ | ✓ | ✓ |
+| ZeptoMail | ✓ | ✓ | ❌ | ❌ |
+| Azure Communication Services | ✓ | ✓¹ | ✓ | ❌ |
 | FakeEmailProvider (dev) | ✓ | ✓ | ✓ | ✓ |
 
 ¹ `data:` URI rewrite of inline images.

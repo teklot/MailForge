@@ -9,6 +9,7 @@
   <Project Path="MailForge.Resend/MailForge.Resend.csproj" />
   <Project Path="MailForge.AmazonSES/MailForge.AmazonSES.csproj" />
   <Project Path="MailForge.Tests/MailForge.Tests.csproj" />
+  <Project Path="MailForge.Communication/MailForge.Communication.csproj" />
   <Project Path="MailForge.Brevo/MailForge.Brevo.csproj" />
   <Project Path="MailForge.Postmark/MailForge.Postmark.csproj" />
   <Project Path="MailForge.ZeptoMail/MailForge.ZeptoMail.csproj" />

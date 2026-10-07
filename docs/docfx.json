@@ -5,6 +5,7 @@
         {
           "files": [
             "MailForge/MailForge.csproj",
+            "MailForge.Communication/MailForge.Communication.csproj",
             "MailForge.Smtp/MailForge.Smtp.csproj",
             "MailForge.Resend/MailForge.Resend.csproj",
             "MailForge.AmazonSES/MailForge.AmazonSES.csproj",

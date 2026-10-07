@@ -1,8 +1,10 @@
 # Provider Verification
 
-Live, real-network checks are an explicit release gate for v1.0. Each `live-*` command in
-the console app sends a real message through a provider and prints `Succeeded`, the
-provider message id, and details.
+Live, real-network checks are an explicit release gate for every release. Each `live-*`
+command in the console app sends a real message through a provider and prints `Succeeded`,
+the provider message id, and details. Automated integration tests already cover every HTTP
+provider against a local mock server; the `live-*` commands add the real network send, and
+per-release results are published in the release notes rather than tracked in this page.
 
 ## The Commands
 
@@ -41,14 +43,6 @@ dotnet run --project MailForge.Console -- live-smtp 127.0.0.1 25 you@example.com
 Expect `Succeeded: True` and a message id. SMTP has no provider-level validation; confirm
 delivery by inspecting the smtp4dev web UI.
 
-## Release Verification
-
-Live, network-level checks are a v1.0 release gate. Every HTTP provider is already
-covered by automated integration tests against a local mock server (full suite green,
-174 tests), and the `live-*` commands above add a real network send against a live
-account. Results are captured per release and published in the release notes rather than
-surfaced as in-progress status here.
-
 ## Known Provider Notes
 
 - **SMTP:** validation is deferred to the server; a rejected recipient reports a delivery
@@ -63,9 +57,9 @@ surfaced as in-progress status here.
 ## Release Checklist
 
 1. Full CI green on ubuntu-latest and windows-latest (Debug locally; Release in CI only).
-2. `dotnet pack` builds all nine packages; inspect each nupkg for README, LICENSE.
+2. `dotnet pack` builds all ten packages; inspect each nupkg for README, LICENSE.
 3. `docfx metadata` + `docfx build` succeed with zero warnings; generated API reflects the
    frozen surface (no internal members).
-4. All `live-*` commands return `Succeeded` against real accounts for the target release
-   candidates; results published in the release notes.
-5. Tag `v1.0.0` — the publish workflow pushes packages and the docs site deploys on `main`.
+4. All `live-*` commands return `Succeeded` against real accounts; the automated
+   integration suite stays green; results published in the release notes.
+5. Tag `v1.1.0` — the publish workflow pushes packages and the docs site deploys on `main`.

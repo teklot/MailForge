@@ -2,6 +2,7 @@ using System.Reflection;
 using MailForge.AmazonSES;
 using MailForge.AzureCS;
 using MailForge.Brevo;
+using MailForge.Communication;
 using MailForge.Mailgun;
 using MailForge.Models;
 using MailForge.Postmark;
@@ -14,9 +15,10 @@ namespace MailForge.Tests
     public class PackageSmokeTests
     {
         // Must match <Version> in Directory.Build.props.
-        private const string ExpectedVersion = "1.0.0";
+        private const string ExpectedVersion = "1.1.0";
         [Theory]
         [InlineData(typeof(EmailMessage), "MailForge")]
+        [InlineData(typeof(NotificationSender), "MailForge.Communication")]
         [InlineData(typeof(SmtpEmailProvider), "MailForge.Smtp")]
         [InlineData(typeof(ResendEmailProvider), "MailForge.Resend")]
         [InlineData(typeof(AmazonSesEmailProvider), "MailForge.AmazonSES")]
@@ -33,6 +35,7 @@ namespace MailForge.Tests
         [Theory]
         [InlineData(typeof(EmailMessage))]
         [InlineData(typeof(EmailSender))]
+        [InlineData(typeof(NotificationSender))]
         [InlineData(typeof(SmtpEmailProvider))]
         [InlineData(typeof(ResendEmailProvider))]
         [InlineData(typeof(AmazonSesEmailProvider))]
@@ -55,6 +58,7 @@ namespace MailForge.Tests
             {
                 Assembly.GetAssembly(typeof(EmailMessage)),
                 Assembly.GetAssembly(typeof(EmailSender)),
+                Assembly.GetAssembly(typeof(NotificationSender)),
                 Assembly.GetAssembly(typeof(SmtpEmailProvider)),
                 Assembly.GetAssembly(typeof(ResendEmailProvider)),
                 Assembly.GetAssembly(typeof(AmazonSesEmailProvider)),
@@ -79,6 +83,7 @@ namespace MailForge.Tests
             {
                 Assembly.GetAssembly(typeof(EmailMessage)),
                 Assembly.GetAssembly(typeof(EmailSender)),
+                Assembly.GetAssembly(typeof(NotificationSender)),
                 Assembly.GetAssembly(typeof(SmtpEmailProvider)),
                 Assembly.GetAssembly(typeof(ResendEmailProvider)),
                 Assembly.GetAssembly(typeof(AmazonSesEmailProvider)),
@@ -89,9 +94,9 @@ namespace MailForge.Tests
                 Assembly.GetAssembly(typeof(AzureCSEmailProvider)),
             };
 
-            Assert.Equal(10, assemblies.Length);
+            Assert.Equal(11, assemblies.Length);
             Assert.All(assemblies, a => Assert.NotNull(a));
-            Assert.Equal(9, assemblies.Distinct().Count());
+            Assert.Equal(10, assemblies.Distinct().Count());
         }
     }
 }

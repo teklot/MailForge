@@ -4,21 +4,24 @@
 
 MailForge is a layered .NET email framework that gives you one strongly-typed API for
 sending, templating, validation, retries, auditing, and failover across eight email
-providers — plus a local Studio inbox for development.
+providers — plus a local Studio inbox for development, and (since v1.1.0) a
+channel-agnostic notification layer for the channels beyond email.
 
 ## Quick Links
 
 - [Getting Started](getting-started.md) - Install and send your first email
 - [Architecture](architecture.md) - Understand the layers and delivery pipeline
+- [Communication](concepts/communication.md) - Channel-agnostic notifications
 - [API Reference](~/api/index.md) - Complete API documentation
 - [Migration Guide](migration.md) - pre-1.0 to v1.0
-- [Provider Verification](provider-verification.md) - Live provider test matrix
+- [Provider Verification](provider-verification.md) - Live provider commands and the release checklist
 
 ## Packages
 
 | Package | Description |
 |---------|-------------|
 | [MailForge](api/MailForge.yml) | Core pipeline: models, builders, templates, validation, retries, auditing, failover |
+| [MailForge.Communication](api/MailForge.Communication.yml) | Channel-agnostic notifications: `INotificationSender`, channels, middleware |
 | [MailForge.Smtp](api/MailForge.Smtp.yml) | SMTP delivery via MailKit |
 | [MailForge.Resend](api/MailForge.Resend.yml) | [Resend](https://resend.com) API provider |
 | [MailForge.AmazonSES](api/MailForge.AmazonSES.yml) | Amazon Simple Email Service provider |

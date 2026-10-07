@@ -5,8 +5,13 @@
 MailForge is a layered framework:
 
 ```
-Developer App → Layer 1: Framework → Layer 2: Provider SDK · MailForge Studio → Internet
+Developer App → Communication → Layer 1: Framework → Layer 2: Provider SDK · MailForge Studio → Internet
 ```
+
+**Communication layer (v1.1.0).** `MailForge.Communication` adds a channel-agnostic
+`INotificationSender` on top of `Layer 1`. Channels deliver through the framework: the
+`EmailChannel` adapter delegates to `IEmailSender`, so email behavior is unchanged. See
+[Communication](concepts/communication.md).
 
 **Layer 1 — Framework.** The core pipeline: message models and builders, typed emails,
 template rendering, validation, retries, auditing, middleware, and failover. You interact
@@ -24,6 +29,9 @@ SMTP relay. It never talks to the network.
 ┌───────────────────────────────────────────────────────────────────────────┐
 │  Developer App                                                            │
 │      │                                                                    │
+│      ▼                                                                    │
+│  COMMUNICATION  INotificationSender (MailForge.Communication, v1.1.0)     │
+│      │  routes Notification → channel → middleware                       │
 │      ▼                                                                    │
 │  LAYER 1  IEmailSender                                                    │
 │      │  template render → validation → retry → logging → audit → your mw  │
@@ -95,3 +103,11 @@ From v1.0.0 the public API is **frozen**:
 
 The builder methods: `UseProvider`, `UseDefaultFrom`, `EnableAutoPlainText`, `WithRetries`,
 `UseAuditSink`, `RegisterTemplate`, `AddValidator`, `AddMiddleware`, `UseFailover`.
+
+## Communication
+
+`AddCommunication(Action<CommunicationBuilder>)` (from `MailForge.Communication`) registers
+`INotificationSender`, `IChannelRegistry`, and your channels on top of the existing
+registration. The `CommunicationBuilder` methods: `UseChannel`, `UseChannel(factory)`,
+`UseEmailChannel`, `AddMiddleware`. Email stays the single shipping channel — see
+[Communication](concepts/communication.md).

@@ -4,7 +4,7 @@
 [![NuGet Version](https://img.shields.io/nuget/v/MailForge)](https://www.nuget.org/packages/MailForge)
 [![.NET](https://img.shields.io/badge/.NET-net10.0%20%7C%20netstandard2.0-blue)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-FluentHtml-blueviolet)](https://teklot.github.io/MailForge/)
+[![Docs](https://img.shields.io/badge/docs-MailForge-blueviolet)](https://teklot.github.io/MailForge/)
 
 MailForge is a unified, layered transactional communication ecosystem for .NET applications. It bridges the gap between lightweight email libraries and large third-party email providers by offering a provider-agnostic framework and a local developer studio.
 
@@ -51,15 +51,16 @@ without tying your business logic to any single service.
 
 | | MailKit / SmtpClient | Vendor SDKs<br>(Resend, SendGrid, SES) | FluentEmail | **MailForge** |
 |---|:---:|:---:|:---:|:---:|
-| Typed emails (`Email<TModel>`) | ✗ | ✗ | ✗ | ✔ |
-| Razor + inline templates | ✗ | ✗ | add-on | ✔ |
-| Auto plain-text generation | ✗ | ✗ | ✗ | ✔ |
-| Delivery pipeline (validation, logging, retries, audit) | ✗ | ✗ | ✗ | ✔ |
-| Multi-provider failover with precedence | ✗ | ✗ | ✗ | ✔ |
-| Provider capability contracts | ✗ | ✗ | ✗ | ✔ |
-| Swap providers without changing email classes | ✗ | ✗ | ~ | ✔ |
-| Zero-setup testing (`FakeEmailProvider`) | ✗ | ✗ | ✗ | ✔ |
-| DI-first registration | ✗ | ✔ | ✔ | ✔ |
+| Typed emails (`Email<TModel>`) | ❌ | ❌ | ❌ | ✔ |
+| Razor + inline templates | ❌ | ❌ | add-on | ✔ |
+| Auto plain-text generation | ❌ | ❌ | ❌ | ✔ |
+| Delivery pipeline (validation, logging, retries, audit) | ❌ | ❌ | ❌ | ✔ |
+| Multi-provider failover with precedence | ❌ | ❌ | ❌ | ✔ |
+| Provider capability contracts | ❌ | ❌ | ❌ | ✔ |
+| Swap providers without changing email classes | ❌ | ❌ | ~ | ✔ |
+| Zero-setup testing (`FakeEmailProvider`) | ❌ | ❌ | ❌ | ✔ |
+| DI-first registration | ❌ | ✔ | ✔ | ✔ |
+| Multi-channel notifications (`INotificationSender`) | ❌ | ❌ | ❌ | ✔ |
 
 ## How It Works
 
@@ -87,6 +88,10 @@ MailForge is structured into three progressive layers that evolve without archit
 2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`, `MailForge.Postmark`, `MailForge.Mailgun`, `MailForge.Brevo`, `MailForge.AzureCS`, `MailForge.ZeptoMail`): Connectors handling authentication, external API communication, and delivery responses.
 3. **Layer 3 — Local Studio** (`MailForge.Studio`): In-repo project providing a local inbox backend in the `MailForge.Studio.Capture` namespace: a `StudioEmailProvider` that persists everything the pipeline sends to a SQLite local inbox, a lightweight SMTP relay that captures mail from any SMTP client, and a `MailForge.Studio.Web` dashboard (FluentHtml + HTMX + Bootstrap 5) hosting an inbox UI and REST API via the `studio-web` console command.
 
+Sitting on top of Layer 1, `MailForge.Communication` adds a channel-agnostic notification
+surface (`INotificationSender`) for the channels to come — Telegram, Webhook, WhatsApp —
+with the first channel (`EmailChannel`) delegating to the email pipeline unchanged.
+
 ## Documentation
 
 The full documentation site is at [teklot.github.io/MailForge](https://teklot.github.io/MailForge) —
@@ -94,17 +99,19 @@ sources live in `docs/` and are generated with DocFX on every push to `main`.
 
 - [Getting Started](docs/getting-started.md) — install, configure, and send your first email
 - [Architecture](docs/architecture.md) — the three layers, delivery pipeline, and failover mechanics
+- [Communication](docs/concepts/communication.md) — channel-agnostic notifications on top of the email pipeline
 - [Providers](docs/concepts/providers.md) — provider options, auth, and capability matrix
 - [Testing](docs/concepts/testing.md) — `FakeEmailProvider` and hermetic provider tests
 - [API Reference](docs/api/index.md) — generated from XML doc comments
 - [Migration](docs/migration.md) — upgrading from pre-1.0 releases
-- [Provider Verification](docs/provider-verification.md) — live provider matrix and the v1.0 release gate
+- [Provider Verification](docs/provider-verification.md) — live `live-*` commands and the release checklist
 
 ## Packages
 
 | Package | Description |
 |---|---|
 | **MailForge** | Core framework + contracts: `IEmailProvider`, `IEmailSender`, `EmailMessage`, typed emails, middleware pipeline, validation, Razor/inline rendering, and DI integration |
+| **MailForge.Communication** | Channel-agnostic notifications: `INotificationSender`, `Notification`, channels and middleware, with the email channel adapting the core pipeline |
 | **MailForge.Smtp** | SMTP provider adapter for routing messages to any standard SMTP server |
 | **MailForge.Resend** | Resend API provider adapter |
 | **MailForge.AmazonSES** | Amazon Simple Email Service provider adapter |
@@ -120,6 +127,7 @@ Studio is an in-repo local-dev project and is covered in [Studio Demo](#studio-d
 
 ```shell
 dotnet add package MailForge
+dotnet add package MailForge.Communication
 dotnet add package MailForge.Smtp
 dotnet add package MailForge.Resend
 dotnet add package MailForge.AmazonSES
@@ -175,13 +183,13 @@ swap providers without touching your email classes.
 | Provider | Package | Attachments | Inline images | Headers | Tags | Status |
 |---|---|:---:|:---:|:---:|:---:|---|
 | **SMTP** | `MailForge.Smtp` | ✔ | ✔ | ✔ | ✔¹ | Shipped |
-| **Resend** | `MailForge.Resend` | ✔ | ✗ | ✔ | ✔ | Shipped |
+| **Resend** | `MailForge.Resend` | ✔ | ❌ | ✔ | ✔ | Shipped |
 | **Amazon SES** | `MailForge.AmazonSES` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Postmark** | `MailForge.Postmark` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Mailgun** | `MailForge.Mailgun` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Brevo** | `MailForge.Brevo` | ✔ | ✔ | ✔ | ✔ | Shipped |
-| **Azure Communication Services** | `MailForge.AzureCS` | ✔ | ✔ | ✔ | ✗ | Shipped |
-| **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✔ | ✔ | ✗ | ✗ | Shipped |
+| **Azure Communication Services** | `MailForge.AzureCS` | ✔ | ✔ | ✔ | ❌ | Shipped |
+| **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✔ | ✔ | ❌ | ❌ | Shipped |
 
 ¹ SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers.
 
@@ -443,6 +451,7 @@ or `wwwroot` assets in the Studio project.
 
 ```
 MailForge/              Layer 1 core framework + contracts (typed emails, pipeline, DI)
+MailForge.Communication/ Channel-agnostic notifications (INotificationSender + email channel adapter)
 MailForge.Smtp/         Layer 2 SMTP provider
 MailForge.Resend/       Layer 2 Resend provider
 MailForge.AmazonSES/    Layer 2 Amazon SES provider

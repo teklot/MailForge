@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>MailForge.Communication</Title>
+    <Description>MailForge.Communication is the channel-neutral foundation of the MailForge notification ecosystem. Provides the communication abstractions (INotificationSender, IChannel, channel registry, notification envelope) and the Email channel that plugs the existing email pipeline into the notification model.</Description>
+    <Copyright>Copyright © 2026 TekLot</Copyright>
+    <PackageId>MailForge.Communication</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>MailForge;Communication;Notifications;MultiChannel;dotnet-library</PackageTags>
+    <PackageReleaseNotes>Channel-neutral notification abstractions: INotificationSender, IChannel, IChannelRegistry, notification envelope, and the Email channel over the existing email pipeline.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MailForge\MailForge.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
+  </ItemGroup>
+
+</Project>

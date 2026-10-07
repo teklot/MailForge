@@ -67,6 +67,9 @@ logging, audit, and your middleware, then hands the message to the configured pr
 Register it via `AddMailForge`; you can also construct `EmailSender` directly if you are
 not using dependency injection.
 
+For channel-agnostic sending on top of the email pipeline, see
+[Communication](communication.md).
+
 ## Validation
 
 The default `DefaultEmailValidator` requires a sender, at least one recipient, a subject,

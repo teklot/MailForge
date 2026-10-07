@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MailForge\MailForge.csproj" />
+    <ProjectReference Include="..\MailForge.Communication\MailForge.Communication.csproj" />
     <ProjectReference Include="..\MailForge.Smtp\MailForge.Smtp.csproj" />
     <ProjectReference Include="..\MailForge.Resend\MailForge.Resend.csproj" />
     <ProjectReference Include="..\MailForge.AmazonSES\MailForge.AmazonSES.csproj" />

@@ -8,6 +8,12 @@ Install the core package via NuGet:
 dotnet add package MailForge
 ```
 
+For channel-agnostic notifications (see [Communication](concepts/communication.md)):
+
+```bash
+dotnet add package MailForge.Communication
+```
+
 Then add the provider packages you want to use:
 
 ```bash
@@ -115,6 +121,32 @@ For local work without a real provider:
    SMTP relay you can point any tool at. See [Studio](concepts/studio.md).
 3. Run live checks against [smtp4dev](https://github.com/rnwood/smtp4dev) or a real provider
    with the `live-*` commands, documented in [Provider Verification](provider-verification.md).
+
+## Channel-Agnostic Notifications
+
+`MailForge.Communication` (v1.1.0) sends the same email content through a channel-neutral
+`INotificationSender` — the first channel, email, delegates to the pipeline you configured
+above:
+
+```csharp
+using MailForge.Communication.Abstractions;
+using MailForge.Communication.Extensions;
+using MailForge.Communication.Models;
+
+services.AddCommunication(builder => builder.UseEmailChannel());
+
+var notifications = serviceProvider.GetRequiredService<INotificationSender>();
+var notificationResult = await notifications.SendAsync(
+    new Notification(ChannelType.Email, new EmailContent(
+        EmailMessage.Create()
+            .From("noreply@example.com")
+            .To("jane@example.com")
+            .Subject("Hi")
+            .Text("Hi")
+            .Build())));
+```
+
+See [Communication](concepts/communication.md) for channels, middleware, and results.
 
 ## Next Steps
 

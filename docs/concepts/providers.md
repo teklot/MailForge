@@ -19,9 +19,9 @@ services.AddMailForge(builder => builder
 | Postmark | MailForge.Postmark | ✓ | ✓ | ✓ | ✓ |
 | Mailgun | MailForge.Mailgun | ✓ | ✓ | ✓ | ✓ |
 | Brevo | MailForge.Brevo | ✓ | ✓ | ✓ | ✓ |
-| Resend | MailForge.Resend | ✓ | ✗ | ✓ | ✓ |
-| ZeptoMail | MailForge.ZeptoMail | ✓ | ✓ | ✗ | ✗ |
-| Azure Communication Services | MailForge.AzureCS | ✓ | ✓¹ | ✓ | ✗ |
+| Resend | MailForge.Resend | ✓ | ❌ | ✓ | ✓ |
+| ZeptoMail | MailForge.ZeptoMail | ✓ | ✓ | ❌ | ❌ |
+| Azure Communication Services | MailForge.AzureCS | ✓ | ✓¹ | ✓ | ❌ |
 
 ¹ Azure CS has no `cid:` attachment mechanism; inline images are rewritten as `data:` URIs
 in the HTML body.
