@@ -24,13 +24,15 @@ dotnet run --project MailForge.Console -- <command> [args]
 | Brevo | `live-brevo` | `[apiKey] [to]` | `BREVO_API_KEY` |
 | ZeptoMail | `live-zeptomail` | `[sendApiKey] [to]` | `ZEPTOMAIL_SEND_API_KEY` |
 | Azure CS | `live-azurecs` | `[endpoint] [accessKey] [sender] [to]` | `AZURE_COMMUNICATION_ENDPOINT`, `AZURE_COMMUNICATION_ACCESS_KEY`, `AZURE_COMMUNICATION_SENDER` |
+| Telegram | `live-telegram` | `[botToken] [chatId]` | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
 
 **Recipient / sender defaults:** `LIVE_TO` picks the recipient for every command (default
-`recipient@example.com`); `LIVE_FROM` picks the sender (default `sender@example.com`). For
-production-like runs set both env vars — addresses are the only per-run variable.
+`recipient@example.com`); `LIVE_FROM` picks the sender (default `sender@example.com`).
+Set either environment variable to override the default for a run.
 
-Every test message carries: subject, HTML + text bodies, one tag (`purpose=live-test`),
-and one text attachment (`note.txt`).
+Every email test message carries: subject, HTML + text bodies, one tag (`purpose=live-test`),
+and one text attachment (`note.txt`). The Telegram command sends a plain-text message; the
+attachment and tag details apply to the email commands.
 
 ### Local SMTP (offline)
 
@@ -53,13 +55,15 @@ delivery by inspecting the smtp4dev web UI.
 - **Azure CS:** the sender must be verified for the resource, and the access key is
   Base64-decoded before HMAC signing.
 - **SES:** credentials fall back to the standard AWS credential chain when keys are absent.
+- **Telegram:** the bot must have started a conversation with the chat (or be an admin of a
+  channel) before it can send; get the chat id from a message the user sends the bot.
 
 ## Release Checklist
 
 1. Full CI green on ubuntu-latest and windows-latest (Debug locally; Release in CI only).
-2. `dotnet pack` builds all ten packages; inspect each nupkg for README, LICENSE.
+2. `dotnet pack` builds all eleven packages; inspect each nupkg for README, LICENSE.
 3. `docfx metadata` + `docfx build` succeed with zero warnings; generated API reflects the
-   frozen surface (no internal members).
+   supported surface (no internal members).
 4. All `live-*` commands return `Succeeded` against real accounts; the automated
    integration suite stays green; results published in the release notes.
-5. Tag `v1.1.0` — the publish workflow pushes packages and the docs site deploys on `main`.
+5. Tag the release — the publish workflow pushes packages and the docs site deploys on `main`.

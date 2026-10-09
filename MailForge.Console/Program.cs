@@ -6,7 +6,8 @@ namespace MailForge.Console
     /// <summary>
     /// MailForge console entry point. With no arguments the interactive command menu is shown.
     /// Run live tests or the Studio demo directly with: live-smtp, live-resend, live-ses,
-    /// live-postmark, live-mailgun, live-brevo, live-zeptomail, live-azurecs, studio-demo, studio-web.
+    /// live-postmark, live-mailgun, live-brevo, live-zeptomail, live-azurecs, live-telegram,
+    /// studio-demo, studio-web.
     /// </summary>
     public static class Program
     {

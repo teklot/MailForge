@@ -14,6 +14,12 @@ For channel-agnostic notifications (see [Communication](concepts/communication.m
 dotnet add package MailForge.Communication
 ```
 
+For the Telegram channel (text, photos, documents, inline keyboards):
+
+```bash
+dotnet add package MailForge.Telegram
+```
+
 Then add the provider packages you want to use:
 
 ```bash
@@ -124,9 +130,10 @@ For local work without a real provider:
 
 ## Channel-Agnostic Notifications
 
-`MailForge.Communication` (v1.1.0) sends the same email content through a channel-neutral
-`INotificationSender` — the first channel, email, delegates to the pipeline you configured
-above:
+`MailForge.Communication` sends the same content through a channel-neutral
+`INotificationSender` — the email channel delegates to the pipeline you configured
+above, the Telegram channel sends through the Telegram Bot API, and future channels
+plug in the same way:
 
 ```csharp
 using MailForge.Communication.Abstractions;
@@ -147,6 +154,23 @@ var notificationResult = await notifications.SendAsync(
 ```
 
 See [Communication](concepts/communication.md) for channels, middleware, and results.
+
+```csharp
+using MailForge.Communication.Abstractions;
+using MailForge.Communication.Extensions;
+using MailForge.Communication.Models;
+using MailForge.Telegram;
+using MailForge.Telegram.Extensions;
+
+services.AddCommunication(builder => builder
+    .UseEmailChannel()
+    .UseTelegramChannel(new TelegramOptions { BotToken = "123:abc" }));
+
+var notifications = serviceProvider.GetRequiredService<INotificationSender>();
+var telegramResult = await notifications.SendAsync(new Notification(
+    ChannelType.Telegram,
+    new TelegramContent("chat-id", "<b>Server down!</b>", TelegramParseMode.Html)));
+```
 
 ## Next Steps
 

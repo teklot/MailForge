@@ -1,10 +1,11 @@
 # Communication
 
-The `MailForge.Communication` package (v1.1.0) generalizes MailForge from an email-only
+The `MailForge.Communication` package generalizes MailForge from an email-only
 library into a channel-aware notification framework — without changing the email API. It
-sits **on top of** the core `MailForge` pipeline: the first channel (`EmailChannel`)
-delegates to the existing `IEmailSender`, so every email behavior (validation, retries,
-auditing, failover) is preserved as-is.
+sits **on top of** the core `MailForge` pipeline: the `EmailChannel` delegates to the
+existing `IEmailSender`, so every email behavior (validation, retries, auditing, failover)
+is preserved as-is. Channels live in their own packages — `MailForge.Telegram` ships the
+first non-email one, and any channel plugs into the same `INotificationProvider` contract.
 
 ## The Model
 
@@ -71,3 +72,45 @@ channel; `UseEmailChannel()` wires the email adapter over the `IEmailSender` reg
 
 See [Core](core.md) for the email pipeline and
 [Architecture](../architecture.md) for where communication fits.
+
+## Telegram Channel
+
+`MailForge.Telegram` adds Telegram as a first-class channel: `TelegramContent` carries one
+or more chat ids plus the message text, an optional parse mode, media, and an inline
+keyboard. `TelegramChannel` hands the notification to `TelegramNotificationProvider`, which
+calls the Bot API (`sendMessage`, `sendPhoto`, `sendDocument`). Transient failures (429,
+5xx, transport errors) are thrown as `NotificationException` with `IsTransient == true`;
+permanent API rejections (unknown chat, invalid payload) return a `Failed` result.
+
+```csharp
+using MailForge.Communication.Extensions;
+using MailForge.Communication.Models;
+using MailForge.Telegram;
+using MailForge.Telegram.Extensions;
+
+services.AddCommunication(builder => builder
+    .UseEmailChannel()
+    .UseTelegramChannel(new TelegramOptions { BotToken = "123:ABC" }));
+
+INotificationSender sender = ...;
+
+var result = await sender.SendAsync(new Notification(
+    ChannelType.Telegram,
+    new TelegramContent(
+        chatId: "@ops-alerts",
+        text: "<b>Build failed</b> on <i>main</i>",
+        parseMode: TelegramParseMode.Html,
+        keyboard: new TelegramKeyboard(
+            TelegramKeyboardButton.WithUrl("Open build", "https://ci.example.com/builds/42")))));
+```
+
+- **Media** — `TelegramMedia.FromPhoto(url)`, `TelegramMedia.FromDocument(url)`, or
+  `TelegramMedia.FromDocument(bytes, fileName)` (uploaded as multipart). When media is
+  present, the message text becomes the caption.
+- **Keyboard** — buttons are `WithUrl(text, url)` or `WithCallbackData(text, data)`; rows
+  are conveyed as `TelegramKeyboard(button, ...)` or `TelegramKeyboard(rows)`.
+- **Many chats** — `TelegramContent(chatIds, text, ...)` sends sequentially; a failure on
+  a later chat is reported as `Failed` with a note of how many chats already received it.
+
+`UseTelegramChannel(INotificationProvider)` registers the channel over an existing provider
+— useful for custom providers or future failover chains.

@@ -1,17 +1,18 @@
 # Migration Guide
 
-This guide covers moving to MailForge **v1.0.0** from earlier releases.
+This guide covers moving to MailForge from earlier releases.
 
-## Pre-1.0 → v1.0.0
+## Upgrade path
 
-v1.0 is the first stable release. For consumers using the documented public API through
+MailForge offers a stable public API. For consumers using
+the documented public API through
 `AddMailForge` + `UseProvider`, **no source changes are required.** The changes below only
 affect API surface that was publicly visible but never intended to be public.
 
-### Public surface tightened
+### Surface cleanup
 
-These were implementation details that leaked into the public API during the pre-1.0
-releases. They are now **internal** (excluded from the frozen surface):
+These were implementation details that leaked into the public API in earlier releases.
+They are now **internal** (not part of the supported surface):
 
 - `(Options, HttpClient)` constructors on the six HTTP providers — **Resend, Postmark,
   Mailgun, Brevo, ZeptoMail, AzureCS**. Construct with the options-only constructor
@@ -26,7 +27,7 @@ releases. They are now **internal** (excluded from the frozen surface):
 ### Behavior notes
 
 - **No breaking behavior changes.** Retry, failover, validation, and rendering semantics
-  are unchanged from the pre-1.0 releases.
+  are unchanged from earlier releases.
 - The default auto plain-text behavior is unchanged (enabled).
 
 ## Staying current

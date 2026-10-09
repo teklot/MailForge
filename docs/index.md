@@ -4,8 +4,8 @@
 
 MailForge is a layered .NET email framework that gives you one strongly-typed API for
 sending, templating, validation, retries, auditing, and failover across eight email
-providers — plus a local Studio inbox for development, and (since v1.1.0) a
-channel-agnostic notification layer for the channels beyond email.
+providers — plus a local Studio inbox for development and a channel-agnostic notification
+layer: email, Telegram, or any channel you register.
 
 ## Quick Links
 
@@ -13,7 +13,7 @@ channel-agnostic notification layer for the channels beyond email.
 - [Architecture](architecture.md) - Understand the layers and delivery pipeline
 - [Communication](concepts/communication.md) - Channel-agnostic notifications
 - [API Reference](~/api/index.md) - Complete API documentation
-- [Migration Guide](migration.md) - pre-1.0 to v1.0
+- [Migration Guide](migration.md) - upgrading from earlier releases
 - [Provider Verification](provider-verification.md) - Live provider commands and the release checklist
 
 ## Packages
@@ -22,6 +22,7 @@ channel-agnostic notification layer for the channels beyond email.
 |---------|-------------|
 | [MailForge](api/MailForge.yml) | Core pipeline: models, builders, templates, validation, retries, auditing, failover |
 | [MailForge.Communication](api/MailForge.Communication.yml) | Channel-agnostic notifications: `INotificationSender`, channels, middleware |
+| [MailForge.Telegram](api/MailForge.Telegram.yml) | Telegram Bot API channel: text, photos, documents, and inline keyboards |
 | [MailForge.Smtp](api/MailForge.Smtp.yml) | SMTP delivery via MailKit |
 | [MailForge.Resend](api/MailForge.Resend.yml) | [Resend](https://resend.com) API provider |
 | [MailForge.AmazonSES](api/MailForge.AmazonSES.yml) | Amazon Simple Email Service provider |

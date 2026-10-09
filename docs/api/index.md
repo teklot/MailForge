@@ -19,5 +19,5 @@ Browse the auto-generated API documentation for all MailForge packages.
 The API reference is generated with DocFX from XML doc comments. Internal helpers, mappers,
 and test seams are intentionally excluded — they are not part of the supported surface.
 
-> The v1.0 public API is frozen. Breaking changes require a major version.
+> The public API is stable. Breaking changes require a major version.
 > See [Architecture](../architecture.md#api-stability-policy).

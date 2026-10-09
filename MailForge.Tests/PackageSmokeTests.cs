@@ -8,6 +8,7 @@ using MailForge.Models;
 using MailForge.Postmark;
 using MailForge.Resend;
 using MailForge.Smtp;
+using MailForge.Telegram;
 using MailForge.ZeptoMail;
 
 namespace MailForge.Tests
@@ -15,7 +16,7 @@ namespace MailForge.Tests
     public class PackageSmokeTests
     {
         // Must match <Version> in Directory.Build.props.
-        private const string ExpectedVersion = "1.1.0";
+        private const string ExpectedVersion = "1.2.0";
         [Theory]
         [InlineData(typeof(EmailMessage), "MailForge")]
         [InlineData(typeof(NotificationSender), "MailForge.Communication")]
@@ -27,6 +28,7 @@ namespace MailForge.Tests
         [InlineData(typeof(ZeptoMailEmailProvider), "MailForge.ZeptoMail")]
         [InlineData(typeof(MailgunEmailProvider), "MailForge.Mailgun")]
         [InlineData(typeof(AzureCSEmailProvider), "MailForge.AzureCS")]
+        [InlineData(typeof(TelegramNotificationProvider), "MailForge.Telegram")]
         public void PackageMarker_MatchesPackageId(Type markerType, string expectedPackageId)
         {
             Assert.Equal(expectedPackageId, markerType.Assembly.GetName().Name);
@@ -44,6 +46,7 @@ namespace MailForge.Tests
         [InlineData(typeof(ZeptoMailEmailProvider))]
         [InlineData(typeof(MailgunEmailProvider))]
         [InlineData(typeof(AzureCSEmailProvider))]
+        [InlineData(typeof(TelegramNotificationProvider))]
         public void LibraryAssemblies_AreVersionedFromDirectoryBuildProps(Type markerType)
         {
             var version = markerType.Assembly.GetName().Version;
@@ -67,6 +70,7 @@ namespace MailForge.Tests
                 Assembly.GetAssembly(typeof(ZeptoMailEmailProvider)),
                 Assembly.GetAssembly(typeof(MailgunEmailProvider)),
                 Assembly.GetAssembly(typeof(AzureCSEmailProvider)),
+                Assembly.GetAssembly(typeof(TelegramNotificationProvider)),
             };
 
             Assert.All(assemblies, a => Assert.NotNull(a));
@@ -92,11 +96,12 @@ namespace MailForge.Tests
                 Assembly.GetAssembly(typeof(ZeptoMailEmailProvider)),
                 Assembly.GetAssembly(typeof(MailgunEmailProvider)),
                 Assembly.GetAssembly(typeof(AzureCSEmailProvider)),
+                Assembly.GetAssembly(typeof(TelegramNotificationProvider)),
             };
 
-            Assert.Equal(11, assemblies.Length);
+            Assert.Equal(12, assemblies.Length);
             Assert.All(assemblies, a => Assert.NotNull(a));
-            Assert.Equal(10, assemblies.Distinct().Count());
+            Assert.Equal(11, assemblies.Distinct().Count());
         }
     }
 }

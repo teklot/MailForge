@@ -40,16 +40,16 @@ A `FailoverEmailProvider` combines its routes' capabilities with a logical AND: 
 that any single provider in the chain cannot carry is not safe to route, because failover
 may land on the weaker provider.
 
-## Frozen at v1.0
+## Contract scope
 
-The capability contract is frozen to these five flags. Deliberately **not** part of the
-contract (documented, not implemented):
+The contract is limited to these five flags. These are deliberately **not** part of it
+(documented, not implemented):
 
 - **Templates** — template rendering is a framework feature (`ITemplateRegistry`), not a
   provider capability.
 - **Delivery tracking / opens / clicks** — `SupportsTracking` was considered and excluded;
   delivery status comes from `ProviderDeliveryResult` only.
-- **Encryption middleware** — email-content encryption is scope of a future major, not v1.x.
+- **Encryption middleware** — email-content encryption is planned for a future major release.
 - **Automatic promotion back** in failover — see [Failover](failover.md).
 
-Adding anything to this contract in the future is a major version change.
+Adding anything to the contract would be a breaking change (a major release).

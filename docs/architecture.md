@@ -8,10 +8,11 @@ MailForge is a layered framework:
 Developer App → Communication → Layer 1: Framework → Layer 2: Provider SDK · MailForge Studio → Internet
 ```
 
-**Communication layer (v1.1.0).** `MailForge.Communication` adds a channel-agnostic
-`INotificationSender` on top of `Layer 1`. Channels deliver through the framework: the
-`EmailChannel` adapter delegates to `IEmailSender`, so email behavior is unchanged. See
-[Communication](concepts/communication.md).
+**Communication layer.** `MailForge.Communication` adds a channel-agnostic
+`INotificationSender` on top of `Layer 1`. The `EmailChannel` adapter delegates to
+`IEmailSender`, so email behavior is unchanged; `MailForge.Telegram` delivers text, media,
+and keyboards through the Telegram Bot API — the first non-email channel, with more to
+follow. See [Communication](concepts/communication.md).
 
 **Layer 1 — Framework.** The core pipeline: message models and builders, typed emails,
 template rendering, validation, retries, auditing, middleware, and failover. You interact
@@ -30,7 +31,7 @@ SMTP relay. It never talks to the network.
 │  Developer App                                                            │
 │      │                                                                    │
 │      ▼                                                                    │
-│  COMMUNICATION  INotificationSender (MailForge.Communication, v1.1.0)     │
+│  COMMUNICATION  INotificationSender (email + Telegram channels)              │
 │      │  routes Notification → channel → middleware                       │
 │      ▼                                                                    │
 │  LAYER 1  IEmailSender                                                    │
@@ -85,11 +86,11 @@ these to guide what you can safely send through a given provider. See
 
 ## API Stability Policy
 
-From v1.0.0 the public API is **frozen**:
+The public API is **stable**:
 
-- Additive changes (new members, new packages) are allowed in minor releases.
-- **Any breaking change to a public signature requires a major version bump.**
-- Public surface is exactly what the generated API reference shows; internal helpers
+- Additive changes (new members, new packages) land in minor releases.
+- **Breaking a public signature requires a major version.**
+- The supported surface is exactly what the generated API reference shows; internal helpers
   (mappers, plain-text generation, test seams) are excluded and not supported for consumers.
 
 ## Dependency Injection

@@ -7,9 +7,11 @@ using MailForge.Brevo;
 using MailForge.Interfaces;
 using MailForge.Mailgun;
 using MailForge.Models;
+using MailForge.Communication.Models;
 using MailForge.Postmark;
 using MailForge.Resend;
 using MailForge.Smtp;
+using MailForge.Telegram;
 using MailForge.ZeptoMail;
 
 namespace MailForge.Console
@@ -24,7 +26,8 @@ namespace MailForge.Console
         public static readonly string[] Commands =
         {
             "live-smtp", "live-resend", "live-ses",
-            "live-postmark", "live-mailgun", "live-brevo", "live-zeptomail", "live-azurecs"
+            "live-postmark", "live-mailgun", "live-brevo", "live-zeptomail", "live-azurecs",
+            "live-telegram"
         };
 
         /// <summary>Returns true when the argument names a live test command.</summary>
@@ -66,6 +69,9 @@ namespace MailForge.Console
                     break;
                 case "live-azurecs":
                     await AzureCSAsync(args);
+                    break;
+                case "live-telegram":
+                    await TelegramAsync(args);
                     break;
             }
         }
@@ -229,6 +235,40 @@ namespace MailForge.Console
             });
             var from = sender;
             await SendAsync(provider, to, "MailForge Azure Communication Services live test", from);
+        }
+
+        /// <summary>
+        /// Sends a message through Telegram. Usage:
+        /// live-telegram [botToken] [chatId]   (values also read from TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID)
+        /// </summary>
+        public static async Task TelegramAsync(string[] args)
+        {
+            var botToken = Arg(args, 1, Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN") ?? string.Empty);
+            var chatId = Arg(args, 2, Environment.GetEnvironmentVariable("TELEGRAM_CHAT_ID") ?? string.Empty);
+            if (string.IsNullOrWhiteSpace(botToken) || string.IsNullOrWhiteSpace(chatId))
+            {
+                System.Console.WriteLine("Telegram requires a bot token and chat id. Pass [botToken] [chatId] or set TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID.");
+                return;
+            }
+
+            System.Console.WriteLine($"Telegram live test -> chat {chatId}");
+            var provider = new TelegramNotificationProvider(new TelegramOptions { BotToken = botToken });
+            try
+            {
+                var notification = new Notification(
+                    ChannelType.Telegram,
+                    new TelegramContent(chatId, "Hello from MailForge! Live test message."));
+                var result = await provider.SendAsync(notification);
+                System.Console.WriteLine($"  Succeeded: {result.Succeeded}");
+                if (!string.IsNullOrEmpty(result.ProviderMessageId))
+                    System.Console.WriteLine($"  ProviderMessageId: {result.ProviderMessageId}");
+                if (!string.IsNullOrEmpty(result.Details))
+                    System.Console.WriteLine($"  Details: {result.Details}");
+            }
+            catch (NotificationException exception)
+            {
+                System.Console.WriteLine($"  Failed (transient={exception.IsTransient}): {exception.Message}");
+            }
         }
 
         private static async Task SendAsync(IEmailProvider provider, string to, string subject, string? from = null)

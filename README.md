@@ -6,9 +6,9 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-MailForge-blueviolet)](https://teklot.github.io/MailForge/)
 
-MailForge is a unified, layered transactional communication ecosystem for .NET applications. It bridges the gap between lightweight email libraries and large third-party email providers by offering a provider-agnostic framework and a local developer studio.
+MailForge is a unified, layered transactional communication ecosystem for .NET applications. It bridges the gap between lightweight email libraries and large third-party email providers by offering a provider-agnostic framework and a local developer studio. Beyond email, its channel-agnostic notification layer (`INotificationSender`) delivers transactional messages to channels such as Telegram via the Bot API, all from one strongly typed API.
 
-The developer experience goal: a strongly typed, production-ready transactional email after installing a single package with minimal configuration.
+The developer experience goal: a strongly typed, production-ready transactional communication after installing a single package with minimal configuration.
 
 ```csharp
 await emailSender.SendAsync(new WelcomeEmail(userModel));
@@ -43,10 +43,10 @@ await emailSender.SendAsync(new WelcomeEmail(userModel));
 ## Why MailForge?
 
 Sending transactional email in .NET usually means choosing between low-level plumbing and
-vendor lock-in — and repeating the same boilerplate every time. Raw SMTP libraries make you
+vendor lock-in, and repeating the same boilerplate every time. Raw SMTP libraries make you
 hand-assemble messages, templates, retries, and logging. Vendor SDKs work well but only for
 that one vendor, so swapping providers rewrites your email classes. MailForge fills that gap:
-one strongly typed programming model, a real delivery pipeline, and failover across providers —
+one strongly typed programming model, a real delivery pipeline, and failover across providers,
 without tying your business logic to any single service.
 
 | | MailKit / SmtpClient | Vendor SDKs<br>(Resend, SendGrid, SES) | FluentEmail | **MailForge** |
@@ -64,11 +64,17 @@ without tying your business logic to any single service.
 
 ## How It Works
 
-MailForge is structured into three progressive layers that evolve without architectural rewrites:
+MailForge is structured into three progressive layers, with the channel-agnostic
+communication layer (`INotificationSender`) on top, that evolve without architectural rewrites:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                      Developer App                      │
+└────────────────────────────┬────────────────────────────┘
+                             ▼
+┌─────────────────────────────────────────────────────────┐
+│      Communication layer: MailForge.Communication       │
+│      INotificationSender · Email · Telegram             │
 └────────────────────────────┬────────────────────────────┘
                              ▼
 ┌─────────────────────────────────────────────────────────┐
@@ -77,25 +83,25 @@ MailForge is structured into three progressive layers that evolve without archit
 └────────────────────────────┬────────────────────────────┘
                              ▼
 ┌─────────────────────────────────────────────────────────┐
-│        Layer 2: Provider SDK · MailForge Studio         │
+│        Layer 2: Provider SDK · Layer 3: Studio (local)  │
 │           (Local Dev · Providers Wiring · Relay)        │
 └────────────────────────────┬────────────────────────────┘
                              ▼
                           Internet
 ```
 
+- **Communication layer**: `MailForge.Communication` sits on top of the framework.
+  `INotificationSender` routes a `Notification` through the `EmailChannel` (which delegates to
+  the email pipeline below) or the Telegram channel via the Bot API (text, HTML / MarkdownV2,
+  photos, documents, inline keyboards), with Webhook, WhatsApp, and more to come.
 1. **Layer 1 — Core Framework** (`MailForge`): Provider-agnostic contracts plus the developer programming model: typed emails, pipeline, validation, middleware, template rendering, and multi-provider failover with precedence (.NET Standard 2.0 compatible).
 2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`, `MailForge.Postmark`, `MailForge.Mailgun`, `MailForge.Brevo`, `MailForge.AzureCS`, `MailForge.ZeptoMail`): Connectors handling authentication, external API communication, and delivery responses.
 3. **Layer 3 — Local Studio** (`MailForge.Studio`): In-repo project providing a local inbox backend in the `MailForge.Studio.Capture` namespace: a `StudioEmailProvider` that persists everything the pipeline sends to a SQLite local inbox, a lightweight SMTP relay that captures mail from any SMTP client, and a `MailForge.Studio.Web` dashboard (FluentHtml + HTMX + Bootstrap 5) hosting an inbox UI and REST API via the `studio-web` console command.
 
-Sitting on top of Layer 1, `MailForge.Communication` adds a channel-agnostic notification
-surface (`INotificationSender`) for the channels to come — Telegram, Webhook, WhatsApp —
-with the first channel (`EmailChannel`) delegating to the email pipeline unchanged.
-
 ## Documentation
 
-The full documentation site is at [teklot.github.io/MailForge](https://teklot.github.io/MailForge) —
-sources live in `docs/` and are generated with DocFX on every push to `main`.
+The full documentation site is at [teklot.github.io/MailForge](https://teklot.github.io/MailForge).
+Sources live in `docs/` and are generated with DocFX on every push to `main`.
 
 - [Getting Started](docs/getting-started.md) — install, configure, and send your first email
 - [Architecture](docs/architecture.md) — the three layers, delivery pipeline, and failover mechanics
@@ -103,7 +109,7 @@ sources live in `docs/` and are generated with DocFX on every push to `main`.
 - [Providers](docs/concepts/providers.md) — provider options, auth, and capability matrix
 - [Testing](docs/concepts/testing.md) — `FakeEmailProvider` and hermetic provider tests
 - [API Reference](docs/api/index.md) — generated from XML doc comments
-- [Migration](docs/migration.md) — upgrading from pre-1.0 releases
+- [Migration](docs/migration.md) — moving from earlier releases
 - [Provider Verification](docs/provider-verification.md) — live `live-*` commands and the release checklist
 
 ## Packages
@@ -112,6 +118,7 @@ sources live in `docs/` and are generated with DocFX on every push to `main`.
 |---|---|
 | **MailForge** | Core framework + contracts: `IEmailProvider`, `IEmailSender`, `EmailMessage`, typed emails, middleware pipeline, validation, Razor/inline rendering, and DI integration |
 | **MailForge.Communication** | Channel-agnostic notifications: `INotificationSender`, `Notification`, channels and middleware, with the email channel adapting the core pipeline |
+| **MailForge.Telegram** | Telegram Bot API channel: text/HTML/MarkdownV2 messages, photos, documents, and inline keyboards through the same `INotificationSender` |
 | **MailForge.Smtp** | SMTP provider adapter for routing messages to any standard SMTP server |
 | **MailForge.Resend** | Resend API provider adapter |
 | **MailForge.AmazonSES** | Amazon Simple Email Service provider adapter |
@@ -128,6 +135,7 @@ Studio is an in-repo local-dev project and is covered in [Studio Demo](#studio-d
 ```shell
 dotnet add package MailForge
 dotnet add package MailForge.Communication
+dotnet add package MailForge.Telegram
 dotnet add package MailForge.Smtp
 dotnet add package MailForge.Resend
 dotnet add package MailForge.AmazonSES
@@ -180,9 +188,9 @@ omit `UseProvider` to send through the in-memory `FakeEmailProvider`.
 Each provider ships in its own package and is registered on the builder the same way;
 swap providers without touching your email classes.
 
-| Provider | Package | Attachments | Inline images | Headers | Tags | Status |
+| Provider¹ | Package | Attachments | Inline images | Headers | Tags | Status |
 |---|---|:---:|:---:|:---:|:---:|---|
-| **SMTP** | `MailForge.Smtp` | ✔ | ✔ | ✔ | ✔¹ | Shipped |
+| **SMTP** | `MailForge.Smtp` | ✔ | ✔ | ✔ | ✔² | Shipped |
 | **Resend** | `MailForge.Resend` | ✔ | ❌ | ✔ | ✔ | Shipped |
 | **Amazon SES** | `MailForge.AmazonSES` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Postmark** | `MailForge.Postmark` | ✔ | ✔ | ✔ | ✔ | Shipped |
@@ -191,7 +199,10 @@ swap providers without touching your email classes.
 | **Azure Communication Services** | `MailForge.AzureCS` | ✔ | ✔ | ✔ | ❌ | Shipped |
 | **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✔ | ✔ | ❌ | ❌ | Shipped |
 
-¹ SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers.
+¹ This table covers email providers only. Non-email delivery (e.g. the Telegram Bot API channel)
+ships through the channel-agnostic `INotificationSender`. See [Communication](docs/concepts/communication.md).
+
+² SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers.
 
 ### SMTP
 
@@ -301,7 +312,7 @@ services.AddMailForge(builder => builder.UseProvider(new AzureCSEmailProvider(ne
 })));
 ```
 
-Signs requests with HMAC-SHA256 over `x-ms-date`, `host`, and `x-ms-content-sha256` headers via HttpClient — no Azure SDK dependency. `SenderAddress` must be a verified domain. Inline images are embedded as `data:` URIs in the HTML body. Tags are not supported by the Azure API.
+Signs requests with HMAC-SHA256 over `x-ms-date`, `host`, and `x-ms-content-sha256` headers via HttpClient, with no Azure SDK dependency. `SenderAddress` must be a verified domain. Inline images are embedded as `data:` URIs in the HTML body. Tags are not supported by the Azure API.
 
 ## Failover
 
@@ -330,9 +341,9 @@ builder.UseFailover(
         FailoverPolicy.AnyFailure, maxAttempts: 2));
 ```
 
-- `FailoverPolicy.TransientOnly` — fails over on timeouts, rate limits, and temporary errors; permanent failures and rejections surface as-is.
-- `FailoverPolicy.AnyFailure` — fails over on any failure, including permanent exceptions and provider rejections.
-- `maxAttempts` — attempts allowed on the same provider before failing over (minimum 1).
+- `FailoverPolicy.TransientOnly`: fails over on timeouts, rate limits, and temporary errors; permanent failures and rejections surface as-is.
+- `FailoverPolicy.AnyFailure`: fails over on any failure, including permanent exceptions and provider rejections.
+- `maxAttempts`: attempts allowed on the same provider before failing over (minimum 1).
 
 When every route fails, the provider throws an `EmailException` whose `IsTransient` is true if
 any failure was retryable. On success, `ProviderDeliveryResult.Details` records which provider
@@ -369,6 +380,9 @@ dotnet run --project MailForge.Console -- live-zeptomail [sendApiKey] [to]
 
 # Azure Communication Services (endpoint, access key, and verified sender as arguments or AZURE_COMMUNICATION_*)
 dotnet run --project MailForge.Console -- live-azurecs [endpoint] [accessKey] [sender] [to]
+
+# Telegram (bot token and chat id as arguments or TELEGRAM_*)
+dotnet run --project MailForge.Console -- live-telegram [botToken] [chatId]
 ```
 
 Environment variables honored by the live tests:
@@ -383,12 +397,13 @@ Environment variables honored by the live tests:
 | `BREVO_API_KEY` | Brevo API key (also as an argument) |
 | `ZEPTOMAIL_SEND_API_KEY` | ZeptoMail API key (also as an argument) |
 | `AZURE_COMMUNICATION_ENDPOINT` / `AZURE_COMMUNICATION_ACCESS_KEY` / `AZURE_COMMUNICATION_SENDER` | Azure Communication Services (also as arguments) |
+| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | Telegram (also as arguments) |
 | `LIVE_FROM` | Sender address (default `sender@example.com`) |
 | `LIVE_TO` | Recipient address (default `recipient@example.com`) |
 
 ## Studio Demo
 
-The `studio-demo` command exercises **MailForge.Studio** locally — no credentials or network
+The `studio-demo` command exercises **MailForge.Studio** locally, with no credentials or network
 needed. Studio is wired into the MailForge pipeline, sends a few sample messages, starts the
 local SMTP relay, and prints the captured inbox. You can point any SMTP client (MailKit,
 `SmtpClient`, telnet) at the printed port to watch its traffic land in the local inbox.
@@ -408,7 +423,7 @@ dotnet run --project MailForge.Console -- studio-demo 0
 
 ## Studio Web Dashboard
 
-`studio-web` hosts the Studio web dashboard locally — a server-rendered inbox UI and REST API
+`studio-web` hosts the Studio web dashboard locally: a server-rendered inbox UI and REST API
 over the captured messages. It needs no credentials and is a single, self-contained command:
 the dashboard binds `http://127.0.0.1:<port>` **and** listens for SMTP on the relay port, so
 anything sent to the local relay appears in the inbox live (the list auto-refreshes every 5 s).
@@ -425,26 +440,26 @@ The database defaults to `%TEMP%\mailforge-studio.db`, the same shared database 
 uses. The flow is:
 
 ```shell
-# terminal 1 — the dashboard (keeps running)
+# terminal 1: the dashboard (keeps running)
 dotnet run --project MailForge.Console -- studio-web
 
-# terminal 2 — seed 3 samples into the same inbox (ephemeral relay, no port conflict)
+# terminal 2: seed 3 samples into the same inbox (ephemeral relay, no port conflict)
 dotnet run --project MailForge.Console -- studio-demo 0
 ```
 
 From there the inbox already shows the sample messages, and anything your app sends to
-`127.0.0.1:2525` (any SMTP client — MailKit, .NET SmtpClient, mailhog-style configs) is captured
+`127.0.0.1:2525` (any SMTP client: MailKit, .NET SmtpClient, mailhog-style configs) is captured
 and appears live. Delete the database file to reset the inbox.
 
 The dashboard offers:
 
-- **Inbox** — search by subject/sender, priority filter, sort, pagination, and auto-refresh (HTMX)
-- **Detail panel** — tabs for Overview, HTML Preview, Plain Text, Raw MIME, Model JSON, Attachments, and Headers
-- **Replay** — re-send a captured message via SMTP (original recipients; a fresh Message-ID)
-- **Export** — download a message as `.eml`, HTML, or JSON
-- **REST API** — `GET /api/messages` (paged search), `GET /api/messages/{id}`, `GET /api/messages/{id}/export?format=eml|html|json`, `GET /api/messages/{id}/raw`, `GET /api/messages/{id}/attachments/{attachmentId}`, `POST /api/messages/{id}/replay`
+- **Inbox**: search by subject/sender, priority filter, sort, pagination, and auto-refresh (HTMX)
+- **Detail panel**: tabs for Overview, HTML Preview, Plain Text, Raw MIME, Model JSON, Attachments, and Headers
+- **Replay**: re-send a captured message via SMTP (original recipients; a fresh Message-ID)
+- **Export**: download a message as `.eml`, HTML, or JSON
+- **REST API**: `GET /api/messages` (paged search), `GET /api/messages/{id}`, `GET /api/messages/{id}/export?format=eml|html|json`, `GET /api/messages/{id}/raw`, `GET /api/messages/{id}/attachments/{attachmentId}`, `POST /api/messages/{id}/replay`
 
-Pages and components are built with fluent HTML helpers (FluentHtml) — there are no Razor views
+Pages and components are built with fluent HTML helpers (FluentHtml). There are no Razor views
 or `wwwroot` assets in the Studio project.
 
 ## Repository Layout
@@ -452,6 +467,7 @@ or `wwwroot` assets in the Studio project.
 ```
 MailForge/              Layer 1 core framework + contracts (typed emails, pipeline, DI)
 MailForge.Communication/ Channel-agnostic notifications (INotificationSender + email channel adapter)
+MailForge.Telegram/     Telegram Bot API channel + provider
 MailForge.Smtp/         Layer 2 SMTP provider
 MailForge.Resend/       Layer 2 Resend provider
 MailForge.AmazonSES/    Layer 2 Amazon SES provider

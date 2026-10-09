@@ -48,7 +48,7 @@ IEmailProvider[])`). `FailoverEmailProvider` can be constructed directly as well
 Routes are evaluated **per attempt** in precedence order. There is **no promotion** of a
 message back to an earlier provider after it recovers — a degraded secondary does not
 silently re-become primary for in-flight traffic. This keeps behavior deterministic and is
-documented as a deliberate decision for v1.0; automatic promotion-on-recovery is a
+documented as a deliberate design decision; automatic promotion-on-recovery is a
 non-feature.
 
 ### When all routes fail
