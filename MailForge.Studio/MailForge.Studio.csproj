@@ -14,16 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.13" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
-    <PackageReference Include="FluentHtml.Core" Version="0.5.0" />
-    <PackageReference Include="FluentHtml.Http" Version="0.5.0" />
-    <PackageReference Include="FluentHtml.Htmx" Version="0.5.0" />
-    <PackageReference Include="FluentHtml.Bootstrap" Version="0.5.0" />
+    <PackageReference Include="FluentHtml.Core" Version="0.6.0" />
+    <PackageReference Include="FluentHtml.Http" Version="0.6.0" />
+    <PackageReference Include="FluentHtml.Htmx" Version="0.6.0" />
+    <PackageReference Include="FluentHtml.Bootstrap" Version="0.6.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
