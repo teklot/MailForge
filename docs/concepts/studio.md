@@ -68,8 +68,8 @@ Replay SMTP targets are configured in `StudioWebOptions` (`SmtpHost`, `SmtpPort`
 The console app has two harnesses (no provider credentials needed):
 
 ```bash
-dotnet run --project MailForge.Console -- studio-demo     # sends samples + prints inbox
-dotnet run --project MailForge.Console -- studio-web      # dashboard on http://127.0.0.1:5000
+dotnet run --project MailForge.Demo -- studio-demo     # sends samples + prints inbox
+dotnet run --project MailForge.Demo -- studio-web      # dashboard on http://127.0.0.1:5000
 ```
 
 `studio-web [port] [dbPath] [relayPort]` — the relay listens on `relayPort` (default 2525;

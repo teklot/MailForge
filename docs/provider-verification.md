@@ -11,7 +11,7 @@ per-release results are published in the release notes rather than tracked in th
 Run any command from the repository root:
 
 ```bash
-dotnet run --project MailForge.Console -- <command> [args]
+dotnet run --project MailForge.Demo -- <command> [args]
 ```
 
 | Provider | Command | Arguments | Env vars (fallback) |
@@ -39,7 +39,7 @@ attachment and tag details apply to the email commands.
 For the SMTP command without a real server, use [smtp4dev](https://github.com/rnwood/smtp4dev):
 
 ```bash
-dotnet run --project MailForge.Console -- live-smtp 127.0.0.1 25 you@example.com
+dotnet run --project MailForge.Demo -- live-smtp 127.0.0.1 25 you@example.com
 ```
 
 Expect `Succeeded: True` and a message id. SMTP has no provider-level validation; confirm

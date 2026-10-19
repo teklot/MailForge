@@ -1,4 +1,4 @@
-namespace MailForge.Console;
+namespace MailForge.Demo;
 
 /// <summary>
 /// Interactive command menu for the MailForge console. Launched when the console runs with

@@ -14,7 +14,7 @@ using MailForge.Smtp;
 using MailForge.Telegram;
 using MailForge.ZeptoMail;
 
-namespace MailForge.Console
+namespace MailForge.Demo
 {
     /// <summary>
     /// Live integration checks that send a real message through a provider. Useful for

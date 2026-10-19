@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace MailForge.Console
+namespace MailForge.Demo
 {
     /// <summary>
     /// MailForge console entry point. With no arguments the interactive command menu is shown.

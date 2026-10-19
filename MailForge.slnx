@@ -17,5 +17,5 @@
   <Project Path="MailForge.Mailgun/MailForge.Mailgun.csproj" />
   <Project Path="MailForge.AzureCS/MailForge.AzureCS.csproj" />
   <Project Path="MailForge.Studio/MailForge.Studio.csproj" />
-  <Project Path="MailForge.Console/MailForge.Console.csproj" />
+  <Project Path="MailForge.Demo/MailForge.Demo.csproj" />
 </Solution>

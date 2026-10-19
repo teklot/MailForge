@@ -7,7 +7,7 @@ using MailForge.Interfaces;
 using MailForge.Models;
 using MailForge.Providers;
 
-namespace MailForge.Console
+namespace MailForge.Demo
 {
     public sealed record WelcomeModel(string Name);
 

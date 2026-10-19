@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using MailForge.Studio.Web;
 
-namespace MailForge.Console
+namespace MailForge.Demo
 {
     /// <summary>
     /// Starts the MailForge Studio web dashboard. An optional port and database path

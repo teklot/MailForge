@@ -9,7 +9,7 @@ using MailForge.Models;
 using MailForge.Studio.Capture;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MailForge.Console
+namespace MailForge.Demo
 {
     /// <summary>
     /// Demonstrates MailForge Studio locally: wires the Studio capture package into the

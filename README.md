@@ -358,31 +358,31 @@ shows an interactive menu of every command (demo walkthrough, Studio, and all li
 
 ```shell
 # SMTP (smtp4dev on localhost:25, or any SMTP server)
-dotnet run --project MailForge.Console -- live-smtp [host] [port] [to]
+dotnet run --project MailForge.Demo -- live-smtp [host] [port] [to]
 
 # Resend (API key as argument or RESEND_API_KEY)
-dotnet run --project MailForge.Console -- live-resend [apiKey] [to]
+dotnet run --project MailForge.Demo -- live-resend [apiKey] [to]
 
 # Amazon SES (region as argument or AWS_REGION; credentials from the default AWS chain)
-dotnet run --project MailForge.Console -- live-ses [region] [to]
+dotnet run --project MailForge.Demo -- live-ses [region] [to]
 
 # Postmark (server token as argument or POSTMARK_SERVER_TOKEN)
-dotnet run --project MailForge.Console -- live-postmark [serverToken] [to]
+dotnet run --project MailForge.Demo -- live-postmark [serverToken] [to]
 
 # Mailgun (API key + domain as arguments or MAILGUN_API_KEY / MAILGUN_DOMAIN)
-dotnet run --project MailForge.Console -- live-mailgun [apiKey] [domain] [to]
+dotnet run --project MailForge.Demo -- live-mailgun [apiKey] [domain] [to]
 
 # Brevo (API key as argument or BREVO_API_KEY)
-dotnet run --project MailForge.Console -- live-brevo [apiKey] [to]
+dotnet run --project MailForge.Demo -- live-brevo [apiKey] [to]
 
 # ZeptoMail (API key as argument or ZEPTOMAIL_SEND_API_KEY)
-dotnet run --project MailForge.Console -- live-zeptomail [sendApiKey] [to]
+dotnet run --project MailForge.Demo -- live-zeptomail [sendApiKey] [to]
 
 # Azure Communication Services (endpoint, access key, and verified sender as arguments or AZURE_COMMUNICATION_*)
-dotnet run --project MailForge.Console -- live-azurecs [endpoint] [accessKey] [sender] [to]
+dotnet run --project MailForge.Demo -- live-azurecs [endpoint] [accessKey] [sender] [to]
 
 # Telegram (bot token and chat id as arguments or TELEGRAM_*)
-dotnet run --project MailForge.Console -- live-telegram [botToken] [chatId]
+dotnet run --project MailForge.Demo -- live-telegram [botToken] [chatId]
 ```
 
 Environment variables honored by the live tests:
@@ -415,10 +415,10 @@ catch-all for any client that cannot use the pipeline.
 
 ```shell
 # Default relay port 2525
-dotnet run --project MailForge.Console -- studio-demo
+dotnet run --project MailForge.Demo -- studio-demo
 
 # Ephemeral port (printed by the demo), useful to avoid port conflicts
-dotnet run --project MailForge.Console -- studio-demo 0
+dotnet run --project MailForge.Demo -- studio-demo 0
 ```
 
 ## Studio Web Dashboard
@@ -430,10 +430,10 @@ anything sent to the local relay appears in the inbox live (the list auto-refres
 
 ```shell
 # One command: web UI on :5000 + SMTP capture relay on :2525, shared temp database
-dotnet run --project MailForge.Console -- studio-web
+dotnet run --project MailForge.Demo -- studio-web
 
 # Custom port, database, and relay port (use "off" to disable the SMTP relay)
-dotnet run --project MailForge.Console -- studio-web 8080 ./mailforge-inbox.db 2526
+dotnet run --project MailForge.Demo -- studio-web 8080 ./mailforge-inbox.db 2526
 ```
 
 The database defaults to `%TEMP%\mailforge-studio.db`, the same shared database `studio-demo`
@@ -441,10 +441,10 @@ uses. The flow is:
 
 ```shell
 # terminal 1: the dashboard (keeps running)
-dotnet run --project MailForge.Console -- studio-web
+dotnet run --project MailForge.Demo -- studio-web
 
 # terminal 2: seed 3 samples into the same inbox (ephemeral relay, no port conflict)
-dotnet run --project MailForge.Console -- studio-demo 0
+dotnet run --project MailForge.Demo -- studio-demo 0
 ```
 
 From there the inbox already shows the sample messages, and anything your app sends to
@@ -478,7 +478,7 @@ MailForge.AzureCS/      Layer 2 Azure Communication Services provider
 MailForge.ZeptoMail/    Layer 2 ZeptoMail provider
 MailForge.Studio/       Layer 3 local Studio (Capture/ SQLite store + SMTP relay; Web/ FluentHtml dashboard + REST API)
 MailForge.Tests/        xUnit test suite
-MailForge.Console/      Sample console application (live tests + studio-demo + studio-web)
+MailForge.Demo/       Demo console application (live tests + studio-demo + studio-web)
 docs/                   DocFX documentation site (sources + generated API reference)
 ```
 
