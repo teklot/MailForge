@@ -15,6 +15,9 @@ Browse the auto-generated API documentation for all MailForge packages.
 | MailForge.Brevo | Brevo API provider (`BrevoOptions`, `BrevoEmailProvider`) |
 | MailForge.ZeptoMail | Zoho ZeptoMail provider (`ZeptoMailOptions`, `ZeptoMailEmailProvider`) |
 | MailForge.AzureCS | Azure Communication Services provider (`AzureCSOptions`, `AzureCSEmailProvider`) |
+| MailForge.Communication | Channel-agnostic notifications (`Notification`, `INotificationSender`, `IChannel`, `INotificationProvider`, middleware) |
+| MailForge.Telegram | Telegram Bot API channel (`TelegramOptions`, `TelegramContent`, `TelegramNotificationProvider`) |
+| MailForge.Webhook | Generic HTTP webhook channel (`WebhookOptions`, `WebhookContent`, `WebhookNotificationProvider`) |
 
 The API reference is generated with DocFX from XML doc comments. Internal helpers, mappers,
 and test seams are intentionally excluded — they are not part of the supported surface.

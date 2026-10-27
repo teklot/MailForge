@@ -4,8 +4,9 @@ The `MailForge.Communication` package generalizes MailForge from an email-only
 library into a channel-aware notification framework — without changing the email API. It
 sits **on top of** the core `MailForge` pipeline: the `EmailChannel` delegates to the
 existing `IEmailSender`, so every email behavior (validation, retries, auditing, failover)
-is preserved as-is. Channels live in their own packages — `MailForge.Telegram` ships the
-first non-email one, and any channel plugs into the same `INotificationProvider` contract.
+is preserved as-is. Channels live in their own packages — `MailForge.Telegram` and
+`MailForge.Webhook` ship the first non-email ones, and any channel plugs into the same
+`INotificationProvider` contract.
 
 ## The Model
 
@@ -113,4 +114,47 @@ var result = await sender.SendAsync(new Notification(
   a later chat is reported as `Failed` with a note of how many chats already received it.
 
 `UseTelegramChannel(INotificationProvider)` registers the channel over an existing provider
+— useful for custom providers or future failover chains.
+
+## Webhook Channel
+
+`MailForge.Webhook` delivers a notification as an HTTP POST to any endpoint. `WebhookContent`
+carries the raw request body (typically JSON) and its content type;
+`WebhookNotificationProvider` posts it verbatim to `WebhookOptions.Endpoint`, applying any
+configured request headers. When `SigningSecret` is set, the body is signed with HMAC-SHA256
+and the lowercase hex digest is written to the `X-MailForge-Signature` header (configurable
+via `SignatureHeader`, optional `SignaturePrefix`). Transient failures (429, 5xx, transport
+errors) are thrown as `NotificationException` with `IsTransient == true`; endpoint rejections
+(4xx) return a `Failed` result.
+
+```csharp
+using MailForge.Communication.Extensions;
+using MailForge.Communication.Models;
+using MailForge.Webhook;
+using MailForge.Webhook.Extensions;
+
+services.AddCommunication(builder => builder
+    .UseEmailChannel()
+    .UseWebhookChannel(new WebhookOptions
+    {
+        Endpoint = new Uri("https://hooks.example.com/notify"),
+        SigningSecret = "shared-secret",
+        Headers = { ["Authorization"] = "Bearer token" },
+    }));
+
+INotificationSender sender = ...;
+
+var result = await sender.SendAsync(new Notification(
+    ChannelType.Webhook,
+    new WebhookContent("{\"event\":\"build.failed\",\"project\":\"main\"}")));
+```
+
+- **Signature** — HMAC-SHA256 over the exact request body, emitted as lowercase hex; verify
+  it on the receiver by recomputing the digest with the shared secret.
+- **Content type** — `WebhookContent(payload, contentType)` defaults to `application/json`;
+  pass e.g. `application/x-www-form-urlencoded` for form payloads.
+- **Retries** — the provider surfaces transient failures only; retry/backoff is handled by
+  the surrounding notification middleware, consistent with the other channels.
+
+`UseWebhookChannel(INotificationProvider)` registers the channel over an existing provider
 — useful for custom providers or future failover chains.

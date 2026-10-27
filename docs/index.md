@@ -23,6 +23,7 @@ layer: email, Telegram, or any channel you register.
 | [MailForge](api/MailForge.yml) | Core pipeline: models, builders, templates, validation, retries, auditing, failover |
 | [MailForge.Communication](api/MailForge.Communication.yml) | Channel-agnostic notifications: `INotificationSender`, channels, middleware |
 | [MailForge.Telegram](api/MailForge.Telegram.yml) | Telegram Bot API channel: text, photos, documents, and inline keyboards |
+| [MailForge.Webhook](api/MailForge.Webhook.yml) | Generic HTTP webhook channel: POST a payload to any endpoint, with optional HMAC-SHA256 signing |
 | [MailForge.Smtp](api/MailForge.Smtp.yml) | SMTP delivery via MailKit |
 | [MailForge.Resend](api/MailForge.Resend.yml) | [Resend](https://resend.com) API provider |
 | [MailForge.AmazonSES](api/MailForge.AmazonSES.yml) | Amazon Simple Email Service provider |

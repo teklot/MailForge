@@ -25,14 +25,15 @@ dotnet run --project MailForge.Demo -- <command> [args]
 | ZeptoMail | `live-zeptomail` | `[sendApiKey] [to]` | `ZEPTOMAIL_SEND_API_KEY` |
 | Azure CS | `live-azurecs` | `[endpoint] [accessKey] [sender] [to]` | `AZURE_COMMUNICATION_ENDPOINT`, `AZURE_COMMUNICATION_ACCESS_KEY`, `AZURE_COMMUNICATION_SENDER` |
 | Telegram | `live-telegram` | `[botToken] [chatId]` | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
+| Webhook | `live-webhook` | `[url] [payload]` | `WEBHOOK_URL` |
 
 **Recipient / sender defaults:** `LIVE_TO` picks the recipient for every command (default
 `recipient@example.com`); `LIVE_FROM` picks the sender (default `sender@example.com`).
 Set either environment variable to override the default for a run.
 
 Every email test message carries: subject, HTML + text bodies, one tag (`purpose=live-test`),
-and one text attachment (`note.txt`). The Telegram command sends a plain-text message; the
-attachment and tag details apply to the email commands.
+and one text attachment (`note.txt`). The Telegram and Webhook commands send a non-email
+payload; the attachment and tag details apply to the email commands.
 
 ### Local SMTP (offline)
 
@@ -57,11 +58,14 @@ delivery by inspecting the smtp4dev web UI.
 - **SES:** credentials fall back to the standard AWS credential chain when keys are absent.
 - **Telegram:** the bot must have started a conversation with the chat (or be an admin of a
   channel) before it can send; get the chat id from a message the user sends the bot.
+- **Webhook:** point the command at any endpoint that accepts an HTTP POST (e.g. a request-bin
+  service) and it echoes the payload; when a signing secret is configured the receiver can
+  verify the `X-MailForge-Signature` HMAC-SHA256 digest.
 
 ## Release Checklist
 
 1. Full CI green on ubuntu-latest and windows-latest (Debug locally; Release in CI only).
-2. `dotnet pack` builds all eleven packages; inspect each nupkg for README, LICENSE.
+2. `dotnet pack` builds all thirteen packages; inspect each nupkg for README, LICENSE.
 3. `docfx metadata` + `docfx build` succeed with zero warnings; generated API reflects the
    supported surface (no internal members).
 4. All `live-*` commands return `Succeeded` against real accounts; the automated

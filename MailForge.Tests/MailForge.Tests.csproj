@@ -29,6 +29,7 @@
     <ProjectReference Include="..\MailForge.AzureCS\MailForge.AzureCS.csproj" />
     <ProjectReference Include="..\MailForge.Studio\MailForge.Studio.csproj" />
     <ProjectReference Include="..\MailForge.Telegram\MailForge.Telegram.csproj" />
+    <ProjectReference Include="..\MailForge.Webhook\MailForge.Webhook.csproj" />
   </ItemGroup>
 
 </Project>

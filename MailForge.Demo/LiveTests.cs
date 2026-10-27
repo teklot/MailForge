@@ -12,6 +12,7 @@ using MailForge.Postmark;
 using MailForge.Resend;
 using MailForge.Smtp;
 using MailForge.Telegram;
+using MailForge.Webhook;
 using MailForge.ZeptoMail;
 
 namespace MailForge.Demo
@@ -27,7 +28,7 @@ namespace MailForge.Demo
         {
             "live-smtp", "live-resend", "live-ses",
             "live-postmark", "live-mailgun", "live-brevo", "live-zeptomail", "live-azurecs",
-            "live-telegram"
+            "live-telegram", "live-webhook"
         };
 
         /// <summary>Returns true when the argument names a live test command.</summary>
@@ -72,6 +73,9 @@ namespace MailForge.Demo
                     break;
                 case "live-telegram":
                     await TelegramAsync(args);
+                    break;
+                case "live-webhook":
+                    await WebhookAsync(args);
                     break;
             }
         }
@@ -258,6 +262,45 @@ namespace MailForge.Demo
                 var notification = new Notification(
                     ChannelType.Telegram,
                     new TelegramContent(chatId, "Hello from MailForge! Live test message."));
+                var result = await provider.SendAsync(notification);
+                System.Console.WriteLine($"  Succeeded: {result.Succeeded}");
+                if (!string.IsNullOrEmpty(result.ProviderMessageId))
+                    System.Console.WriteLine($"  ProviderMessageId: {result.ProviderMessageId}");
+                if (!string.IsNullOrEmpty(result.Details))
+                    System.Console.WriteLine($"  Details: {result.Details}");
+            }
+            catch (NotificationException exception)
+            {
+                System.Console.WriteLine($"  Failed (transient={exception.IsTransient}): {exception.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Posts a message to a webhook endpoint. Usage:
+        /// live-webhook [url] [payload]   (URL also read from WEBHOOK_URL; payload defaults to a sample JSON body)
+        /// </summary>
+        public static async Task WebhookAsync(string[] args)
+        {
+            var url = Arg(args, 1, Environment.GetEnvironmentVariable("WEBHOOK_URL") ?? string.Empty);
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                System.Console.WriteLine("Webhook requires an endpoint URL. Pass [url] or set WEBHOOK_URL.");
+                return;
+            }
+
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var endpoint))
+            {
+                System.Console.WriteLine($"'{url}' is not a valid absolute URL.");
+                return;
+            }
+
+            var payload = Arg(args, 2, "{\"message\":\"Hello from MailForge! Live test message.\"}");
+
+            System.Console.WriteLine($"Webhook live test -> {endpoint}");
+            var provider = new WebhookNotificationProvider(new WebhookOptions { Endpoint = endpoint });
+            try
+            {
+                var notification = new Notification(ChannelType.Webhook, new WebhookContent(payload));
                 var result = await provider.SendAsync(notification);
                 System.Console.WriteLine($"  Succeeded: {result.Succeeded}");
                 if (!string.IsNullOrEmpty(result.ProviderMessageId))

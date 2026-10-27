@@ -25,6 +25,7 @@ internal static class ConsoleMenu
             System.Console.WriteLine(" 10. Live test — ZeptoMail");
             System.Console.WriteLine(" 11. Live test — Azure Communication Services");
             System.Console.WriteLine(" 12. Live test — Telegram");
+            System.Console.WriteLine(" 13. Live test — Webhook");
             System.Console.WriteLine("  0. Exit");
             System.Console.WriteLine();
             System.Console.Write("Choose an option: ");
@@ -43,7 +44,7 @@ internal static class ConsoleMenu
             if (choice == 0)
                 return;
 
-            if (choice is >= 1 and <= 12)
+            if (choice is >= 1 and <= 13)
             {
                 await RunMenuChoice(choice);
                 System.Console.WriteLine();
@@ -97,6 +98,9 @@ internal static class ConsoleMenu
                 break;
             case 12:
                 await LiveTests.TelegramAsync(new[] { LiveTests.Commands[8] });
+                break;
+            case 13:
+                await LiveTests.WebhookAsync(new[] { LiveTests.Commands[9] });
                 break;
         }
     }
