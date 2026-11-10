@@ -34,10 +34,14 @@ namespace MailForge.Communication.Extensions
             foreach (var middleware in builder.Middleware)
                 services.AddSingleton(middleware);
 
+            if (builder.Router != null)
+                services.AddSingleton(builder.Router);
+
             services.AddSingleton<INotificationSender>(sp =>
                 new NotificationSender(
                     sp.GetRequiredService<IChannelRegistry>(),
-                    sp.GetServices<INotificationMiddleware>()));
+                    sp.GetServices<INotificationMiddleware>(),
+                    sp.GetService<INotificationRouter>()));
 
             return services;
         }

@@ -17,7 +17,7 @@ namespace MailForge.Tests
     public class PackageSmokeTests
     {
         // Must match <Version> in Directory.Build.props.
-        private const string ExpectedVersion = "1.3.0";
+        private const string ExpectedVersion = "1.4.0";
         [Theory]
         [InlineData(typeof(EmailMessage), "MailForge")]
         [InlineData(typeof(NotificationSender), "MailForge.Communication")]

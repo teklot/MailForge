@@ -31,6 +31,9 @@ namespace MailForge.Communication.Models
         /// <summary>The time at which the notification was created.</summary>
         public DateTimeOffset CreatedAt { get; }
 
+        /// <summary>An optional event type used by routing rules (for example <c>device.offline</c> or <c>build.failed</c>).</summary>
+        public string? Event { get; }
+
         /// <summary>Creates a notification.</summary>
         /// <param name="channel">The delivery channel.</param>
         /// <param name="content">The channel-specific payload.</param>
@@ -38,13 +41,15 @@ namespace MailForge.Communication.Models
         /// <param name="headers">Custom headers forwarded to the provider where supported.</param>
         /// <param name="tags">Arbitrary key/value tags for routing and analytics.</param>
         /// <param name="messageId">An optional explicit identifier; a new one is generated when omitted.</param>
+        /// <param name="event">An optional event type used by routing rules.</param>
         public Notification(
             ChannelType channel,
             NotificationContent content,
             NotificationPriority priority = NotificationPriority.Normal,
             IDictionary<string, string>? headers = null,
             IDictionary<string, string>? tags = null,
-            string? messageId = null)
+            string? messageId = null,
+            string? @event = null)
         {
             Channel = channel ?? throw new ArgumentNullException(nameof(channel));
             Content = content ?? throw new ArgumentNullException(nameof(content));
@@ -57,6 +62,7 @@ namespace MailForge.Communication.Models
                 : new Dictionary<string, string>(tags, StringComparer.OrdinalIgnoreCase);
             MessageId = messageId ?? Guid.NewGuid().ToString("N");
             CreatedAt = DateTimeOffset.UtcNow;
+            Event = @event ?? (Tags.TryGetValue("event", out var eventTag) ? eventTag : null);
         }
     }
 }

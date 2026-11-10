@@ -22,9 +22,12 @@ await emailSender.SendAsync(new WelcomeEmail(userModel));
 - [How It Works](#how-it-works)
 - [Documentation](#documentation)
 - [Packages](#packages)
+  - [Core](#core)
+  - [Email Providers](#email-providers-packages)
+  - [Communication Channels](#communication-channels-packages)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Providers](#providers)
+- [Email Providers](#email-providers)
   - [SMTP](#smtp)
   - [Resend](#resend)
   - [Amazon SES](#amazon-ses)
@@ -33,6 +36,10 @@ await emailSender.SendAsync(new WelcomeEmail(userModel));
   - [Brevo](#brevo)
   - [ZeptoMail (Zoho)](#zeptomail-zoho)
   - [Azure Communication Services](#azure-communication-services)
+- [Communication Channels](#communication-channels)
+  - [Telegram](#telegram-channel)
+  - [Webhook](#webhook-channel)
+  - [Routing](#routing)
 - [Failover](#failover)
 - [Live Testing](#live-testing)
 - [Studio Demo](#studio-demo)
@@ -94,7 +101,8 @@ communication layer (`INotificationSender`) on top, that evolve without architec
   `INotificationSender` routes a `Notification` through the `EmailChannel` (which delegates to
   the email pipeline below) or the Telegram channel via the Bot API (text, HTML / MarkdownV2,
   photos, documents, inline keyboards), or the Webhook channel (HTTP POST to any endpoint with
-  optional HMAC-SHA256 signing), with WhatsApp and more to come.
+  optional HMAC-SHA256 signing). Optional routing rules can select channels by event type,
+  priority, or tags and fan out to multiple channels; WhatsApp and more are on the roadmap.
 1. **Layer 1 — Core Framework** (`MailForge`): Provider-agnostic contracts plus the developer programming model: typed emails, pipeline, validation, middleware, template rendering, and multi-provider failover with precedence (.NET Standard 2.0 compatible).
 2. **Layer 2 — Provider SDK** (`MailForge.Smtp`, `MailForge.Resend`, `MailForge.AmazonSES`, `MailForge.Postmark`, `MailForge.Mailgun`, `MailForge.Brevo`, `MailForge.AzureCS`, `MailForge.ZeptoMail`): Connectors handling authentication, external API communication, and delivery responses.
 3. **Layer 3 — Local Studio** (`MailForge.Studio`): In-repo project providing a local inbox backend in the `MailForge.Studio.Capture` namespace: a `StudioEmailProvider` that persists everything the pipeline sends to a SQLite local inbox, a lightweight SMTP relay that captures mail from any SMTP client, and a `MailForge.Studio.Web` dashboard (FluentHtml + HTMX + Bootstrap 5) hosting an inbox UI and REST API via the `studio-web` console command.
@@ -115,12 +123,20 @@ Sources live in `docs/` and are generated with DocFX on every push to `main`.
 
 ## Packages
 
+MailForge packages fall into three groups: the core framework, **Communication channels** (delivered via `INotificationSender`), and **email providers** (Layer 2 adapters used by `IEmailSender` / the email channel).
+
+### Core
+
 | Package | Description |
 |---|---|
 | **MailForge** | Core framework + contracts: `IEmailProvider`, `IEmailSender`, `EmailMessage`, typed emails, middleware pipeline, validation, Razor/inline rendering, and DI integration |
-| **MailForge.Communication** | Channel-agnostic notifications: `INotificationSender`, `Notification`, channels and middleware, with the email channel adapting the core pipeline |
-| **MailForge.Telegram** | Telegram Bot API channel: text/HTML/MarkdownV2 messages, photos, documents, and inline keyboards through the same `INotificationSender` |
-| **MailForge.Webhook** | Generic HTTP webhook channel: POST a payload to any endpoint, with optional HMAC-SHA256 request signing |
+
+### Email Providers (packages)
+
+These are Layer 2 email delivery adapters registered with `AddMailForge` / `UseProvider`. For capability details and configuration, see [Email Providers](#email-providers).
+
+| Package | Description |
+|---|---|
 | **MailForge.Smtp** | SMTP provider adapter for routing messages to any standard SMTP server |
 | **MailForge.Resend** | Resend API provider adapter |
 | **MailForge.AmazonSES** | Amazon Simple Email Service provider adapter |
@@ -130,15 +146,25 @@ Sources live in `docs/` and are generated with DocFX on every push to `main`.
 | **MailForge.AzureCS** | Azure Communication Services email provider adapter |
 | **MailForge.ZeptoMail** | ZeptoMail (Zoho) API provider adapter |
 
+### Communication Channels (packages)
+
+These packages deliver notifications through `MailForge.Communication` (`INotificationSender`). They are **not** email providers.
+
+| Package | Description |
+|---|---|
+| **MailForge.Communication** | Channel-agnostic notifications: `INotificationSender`, `Notification`, channels, middleware, and routing rules with fan-out support; the email channel adapts the core pipeline |
+| **MailForge.Telegram** | Telegram Bot API channel: text/HTML/MarkdownV2 messages, photos, documents, and inline keyboards through the same `INotificationSender` |
+| **MailForge.Webhook** | Generic HTTP webhook channel: POST a payload to any endpoint, with optional HMAC-SHA256 request signing |
+
 Studio is an in-repo local-dev project and is covered in [Studio Demo](#studio-demo), not as a package above.
 
 ## Installation
 
 ```shell
+# Core
 dotnet add package MailForge
-dotnet add package MailForge.Communication
-dotnet add package MailForge.Telegram
-dotnet add package MailForge.Webhook
+
+# Email providers (add the ones you need)
 dotnet add package MailForge.Smtp
 dotnet add package MailForge.Resend
 dotnet add package MailForge.AmazonSES
@@ -147,6 +173,11 @@ dotnet add package MailForge.Mailgun
 dotnet add package MailForge.Brevo
 dotnet add package MailForge.AzureCS
 dotnet add package MailForge.ZeptoMail
+
+# Communication channels (optional, multi-channel notifications)
+dotnet add package MailForge.Communication
+dotnet add package MailForge.Telegram
+dotnet add package MailForge.Webhook
 ```
 
 ## Quick Start
@@ -186,14 +217,16 @@ Delivery is validated, logged, audited, and retried on transient failures throug
 middleware pipeline before reaching the configured provider. For development and tests,
 omit `UseProvider` to send through the in-memory `FakeEmailProvider`.
 
-## Providers
+## Email Providers
+
+These are **email delivery providers** (Layer 2) configured with `AddMailForge(...).UseProvider(...)`. They are separate from Communication channels like Telegram and Webhook.
 
 Each provider ships in its own package and is registered on the builder the same way;
 swap providers without touching your email classes.
 
-| Provider¹ | Package | Attachments | Inline images | Headers | Tags | Status |
+| Provider | Package | Attachments | Inline images | Headers | Tags | Status |
 |---|---|:---:|:---:|:---:|:---:|---|
-| **SMTP** | `MailForge.Smtp` | ✔ | ✔ | ✔ | ✔² | Shipped |
+| **SMTP** | `MailForge.Smtp` | ✔ | ✔ | ✔ | ✔¹ | Shipped |
 | **Resend** | `MailForge.Resend` | ✔ | ❌ | ✔ | ✔ | Shipped |
 | **Amazon SES** | `MailForge.AmazonSES` | ✔ | ✔ | ✔ | ✔ | Shipped |
 | **Postmark** | `MailForge.Postmark` | ✔ | ✔ | ✔ | ✔ | Shipped |
@@ -202,10 +235,7 @@ swap providers without touching your email classes.
 | **Azure Communication Services** | `MailForge.AzureCS` | ✔ | ✔ | ✔ | ❌ | Shipped |
 | **ZeptoMail (Zoho)** | `MailForge.ZeptoMail` | ✔ | ✔ | ❌ | ❌ | Shipped |
 
-¹ This table covers email providers only. Non-email delivery (e.g. the Telegram Bot API channel)
-ships through the channel-agnostic `INotificationSender`. See [Communication](docs/concepts/communication.md).
-
-² SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers.
+¹ SMTP has no native tags; they are sent as `X-MailForge-Tag-<key>` headers.
 
 ### SMTP
 
@@ -316,6 +346,52 @@ services.AddMailForge(builder => builder.UseProvider(new AzureCSEmailProvider(ne
 ```
 
 Signs requests with HMAC-SHA256 over `x-ms-date`, `host`, and `x-ms-content-sha256` headers via HttpClient, with no Azure SDK dependency. `SenderAddress` must be a verified domain. Inline images are embedded as `data:` URIs in the HTML body. Tags are not supported by the Azure API.
+
+## Communication Channels
+
+Telegram and Webhook are **channels** (not email providers). They are configured through `MailForge.Communication` and delivered via `INotificationSender`. The email channel can also be used through the same sender, reusing the existing `IEmailSender` pipeline.
+
+```csharp
+using MailForge.Communication.Extensions;
+using MailForge.Communication.Models;
+using MailForge.Telegram;
+using MailForge.Telegram.Extensions;
+using MailForge.Webhook;
+using MailForge.Webhook.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+
+services.AddMailForge(builder => builder
+    .UseDefaultFrom("noreply@example.com"));
+
+services.AddCommunication(builder => builder
+    .UseEmailChannel()
+    .UseTelegramChannel(new TelegramOptions { BotToken = "<bot-token>" })
+    .UseWebhookChannel(new WebhookOptions { Endpoint = new Uri("https://hooks.example.com/notify") })
+    .UseRouting(r => r
+        .WhenEvent("security.breach", ChannelType.Telegram, ChannelType.Webhook)
+        .WhenPriority(NotificationPriority.High, ChannelType.Email)
+        .Default(ChannelType.Email)));
+
+var sender = services.GetRequiredService<INotificationSender>();
+
+await sender.SendAsync(new Notification(
+    ChannelType.Telegram,
+    new TelegramContent("<chat-id>", "Build failed"),
+    NotificationPriority.High,
+    @event: "build.failed"));
+```
+
+### Telegram Channel
+
+`MailForge.Telegram` sends notifications through the Telegram Bot API via `UseTelegramChannel(...)`. Payloads use `TelegramContent` (text/HTML/MarkdownV2, photos, documents, inline keyboards). Live verification: `dotnet run --project MailForge.Demo -- live-telegram [botToken] [chatId]`.
+
+### Webhook Channel
+
+`MailForge.Webhook` posts notifications to an HTTP endpoint via `UseWebhookChannel(...)`. Payloads use `WebhookContent` (raw body, e.g. JSON) with configurable headers and optional HMAC-SHA256 signing (`X-MailForge-Signature`). Live verification: `dotnet run --project MailForge.Demo -- live-webhook [url] [payload]`.
+
+### Routing
+
+Routing rules (`UseRouting(...)`) select channels by event type, priority, tags, or custom predicates, and can fan out to multiple channels. See [Communication](docs/concepts/communication.md) for full details.
 
 ## Failover
 
@@ -473,9 +549,6 @@ or `wwwroot` assets in the Studio project.
 
 ```
 MailForge/              Layer 1 core framework + contracts (typed emails, pipeline, DI)
-MailForge.Communication/ Channel-agnostic notifications (INotificationSender + email channel adapter)
-MailForge.Telegram/     Telegram Bot API channel + provider
-MailForge.Webhook/      Generic HTTP webhook channel + provider (HMAC-SHA256 signing)
 MailForge.Smtp/         Layer 2 SMTP provider
 MailForge.Resend/       Layer 2 Resend provider
 MailForge.AmazonSES/    Layer 2 Amazon SES provider
@@ -484,6 +557,9 @@ MailForge.Mailgun/      Layer 2 Mailgun provider
 MailForge.Brevo/        Layer 2 Brevo provider
 MailForge.AzureCS/      Layer 2 Azure Communication Services provider
 MailForge.ZeptoMail/    Layer 2 ZeptoMail provider
+MailForge.Communication/ Channel-agnostic notifications (INotificationSender + email channel adapter)
+MailForge.Telegram/     Telegram Bot API channel + provider
+MailForge.Webhook/      Generic HTTP webhook channel + provider (HMAC-SHA256 signing)
 MailForge.Studio/       Layer 3 local Studio (Capture/ SQLite store + SMTP relay; Web/ FluentHtml dashboard + REST API)
 MailForge.Tests/        xUnit test suite
 MailForge.Demo/       Demo console application (live tests + studio-demo + studio-web)

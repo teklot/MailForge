@@ -5,13 +5,18 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>MailForge.Communication</Title>
-    <Description>MailForge.Communication is the channel-neutral foundation of the MailForge notification ecosystem. Provides the communication abstractions (INotificationSender, IChannel, channel registry, notification envelope) and the Email channel that plugs the existing email pipeline into the notification model.</Description>
+    <Description>MailForge.Communication is the channel-neutral foundation of the MailForge notification ecosystem. Provides communication abstractions (INotificationSender, IChannel, channel registry, notification envelope), routing rules with fan-out, and the Email channel that plugs the existing email pipeline into the notification model.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>
     <PackageId>MailForge.Communication</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>MailForge;Communication;Notifications;MultiChannel;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Channel-neutral notification abstractions: INotificationSender, IChannel, IChannelRegistry, notification envelope, and the Email channel over the existing email pipeline.</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - Added notification routing (INotificationRouter, routing rules, builder API) with event/priority/tag/predicate matching.
+      - Added fan-out delivery, per-route transforms, and fallback defaults.
+      - Notification now supports an optional Event for routing.
+      - Existing INotificationSender behavior remains unchanged when routing is not configured.
+    </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/mailforge</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/mailforge.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

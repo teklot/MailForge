@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using MailForge.Communication.Abstractions;
+using MailForge.Communication.Routing;
 using MailForge.Interfaces;
 
 namespace MailForge.Communication.Builders
@@ -17,6 +18,7 @@ namespace MailForge.Communication.Builders
         public CommunicationBuilder() { }
         internal IList<Func<IServiceProvider, IChannel>> Channels { get; } = new List<Func<IServiceProvider, IChannel>>();
         internal IList<INotificationMiddleware> Middleware { get; } = new List<INotificationMiddleware>();
+        internal INotificationRouter? Router { get; set; }
 
         /// <summary>Registers a channel instance.</summary>
         public CommunicationBuilder UseChannel(IChannel channel)
@@ -46,6 +48,25 @@ namespace MailForge.Communication.Builders
         public CommunicationBuilder AddMiddleware(INotificationMiddleware middleware)
         {
             Middleware.Add(middleware ?? throw new ArgumentNullException(nameof(middleware)));
+            return this;
+        }
+
+        /// <summary>Configures notification routing rules.</summary>
+        public CommunicationBuilder UseRouting(Action<RoutingBuilder> configure)
+        {
+            if (configure == null)
+                throw new ArgumentNullException(nameof(configure));
+
+            var routingBuilder = new RoutingBuilder();
+            configure(routingBuilder);
+            Router = routingBuilder.Build();
+            return this;
+        }
+
+        /// <summary>Registers an explicit notification router.</summary>
+        public CommunicationBuilder UseRouting(INotificationRouter router)
+        {
+            Router = router ?? throw new ArgumentNullException(nameof(router));
             return this;
         }
     }

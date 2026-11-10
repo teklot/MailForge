@@ -158,3 +158,37 @@ var result = await sender.SendAsync(new Notification(
 
 `UseWebhookChannel(INotificationProvider)` registers the channel over an existing provider
 — useful for custom providers or future failover chains.
+
+## Notification Routing
+
+When you need to select channels based on event type, severity, or other context, configure
+routing on the communication builder. A router evaluates rules in priority order and can
+fan out a notification to multiple channels; if no rules match, the original
+`Notification.Channel` is used as the fallback (or an explicit default).
+
+```csharp
+using MailForge.Communication.Extensions;
+using MailForge.Communication.Models;
+using MailForge.Telegram.Extensions;
+using MailForge.Webhook.Extensions;
+
+services.AddCommunication(builder => builder
+    .UseEmailChannel()
+    .UseTelegramChannel(new TelegramOptions { BotToken = "123:ABC" })
+    .UseWebhookChannel(new WebhookOptions { Endpoint = new Uri("https://hooks.example.com/alerts") })
+    .UseRouting(routing => routing
+        .WhenEvent("security.breach", NotificationPriority.Urgent)
+            .To(ChannelType.Telegram, ChannelType.Webhook)
+        .WhenPriority(NotificationPriority.High, ChannelType.Email)
+        .WhenTag("severity", "warning", ChannelType.Email)
+        .Default(ChannelType.Email)));
+```
+
+- **Event-based routing** — set `Notification.Event` or include an `event` tag; rules can match via `WhenEvent("...")`.
+- **Rule predicates** — `When(...)` accepts any predicate, or use `WhenPriority`/`WhenTag` for common cases.
+- **Fan-out** — a rule can route to multiple channels; `NotificationSender` delivers to each target and aggregates results (success if any target succeeds).
+- **Transformations** — use `Transform` on a rule to clone/modify the notification per route (useful for route-specific metadata).
+- **Fallback** — `Default(ChannelType)` sets the channel when no rules match; otherwise the notification's original channel is used.
+- **Middleware compatibility** — existing `INotificationMiddleware` instances continue to run around delivery as before.
+
+`UseRouting(INotificationRouter)` also accepts a custom router implementation for advanced scenarios.
